@@ -2,26 +2,45 @@
 import { Picture } from 'astro:assets';
 import { site, features, telHref } from '../config';
 import Icon from './Icon.astro';
-import erciyesYol from '../assets/erciyes-yol.jpg';
+import sehirHastanesi from '../assets/konum-sehir-hastanesi.jpg';
+import havalimani from '../assets/konum-havalimani.jpg';
+import meydan from '../assets/konum-meydan.jpg';
+import otogar from '../assets/konum-otogar.jpg';
+import talas from '../assets/konum-talas.jpg';
+
+// Fotoğraf kutusunda sırayla dönen konumlar (kaynaklar: src/assets/KAYNAKLAR.md)
+const locations = [
+  { name: 'Şehir Hastanesi', src: sehirHastanesi, alt: `${site.city} Şehir Hastanesi` },
+  { name: 'Havalimanı', src: havalimani, alt: `${site.city} Erkilet Havalimanı terminali` },
+  { name: 'Meydan', src: meydan, alt: `${site.city} Cumhuriyet Meydanı ve Saat Kulesi` },
+  { name: 'Otogar', src: otogar, alt: `${site.city} Otogarı` },
+  { name: 'Talas', src: talas, alt: 'Talas’ta tarihi taş sokak ve cami' },
+];
 ---
 
 <section class="section why-section" id="hakkimizda">
   <div class="container why">
     <div class="photo" data-reveal>
-      <div class="photo-bg" data-parallax>
-        <Picture
-          src={erciyesYol}
-          formats={['avif', 'webp']}
-          widths={[640, 960, 1400]}
-          sizes="(max-width: 960px) 100vw, 50vw"
-          alt={`Erciyes Dağı'na uzanan ${site.city} yolu`}
-          loading="lazy"
-        />
-      </div>
-      <div class="photo-tag">
-        <Icon name="pin" size={16} />
-        {site.city} · Erciyes
-      </div>
+      {
+        locations.map((l) => (
+          <div class="loc-slide">
+            <div class="photo-bg" data-parallax>
+              <Picture
+                src={l.src}
+                formats={['avif', 'webp']}
+                widths={[...[640, 960].filter((w) => w < l.src.width), Math.min(1400, l.src.width)]}
+                sizes="(max-width: 960px) 100vw, 50vw"
+                alt={l.alt}
+                loading="lazy"
+              />
+            </div>
+            <div class="photo-tag">
+              <Icon name="pin" size={16} />
+              {site.city} · {l.name}
+            </div>
+          </div>
+        ))
+      }
     </div>
 
     <div>
@@ -69,6 +88,15 @@ import erciyesYol from '../assets/erciyes-yol.jpg';
     overflow: hidden;
     aspect-ratio: 4 / 5;
     background: var(--black-3);
+    isolation: isolate;
+  }
+  /* Slaytlar üst üste; JS yoksa yalnızca ilki görünür */
+  .loc-slide {
+    position: absolute;
+    inset: 0;
+  }
+  .loc-slide + .loc-slide {
+    opacity: 0;
   }
   .photo-tag {
     position: absolute;

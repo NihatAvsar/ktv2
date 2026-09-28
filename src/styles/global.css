@@ -184,6 +184,7 @@ p {
   position: absolute;
   inset: 0;
   overflow: hidden;
+  isolation: isolate; /* slayt z-index'leri kutunun dışına taşmasın */
 }
 
 .photo-bg img {

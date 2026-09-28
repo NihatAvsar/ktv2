@@ -2,19 +2,32 @@
 import { Picture } from 'astro:assets';
 import { site, telHref, waHref } from '../config';
 import Icon from './Icon.astro';
-import erciyesYol from '../assets/erciyes-yol.jpg';
+import taksiYol from '../assets/taksi-gece-yol.jpg';
+import taksiPark from '../assets/taksi-gece-park.jpg';
+
+// Firmanın kendi taksi fotoğrafları arka planda sırayla döner
+const slides = [
+  { src: taksiYol, pos: 'center 60%' },
+  { src: taksiPark, pos: 'center 62%' },
+];
 ---
 
 <section class="cta">
   <div class="photo-bg" data-parallax>
-    <Picture
-      src={erciyesYol}
-      formats={['avif', 'webp']}
-      widths={[768, 1280, 2000]}
-      sizes="100vw"
-      alt=""
-      loading="lazy"
-    />
+    {
+      slides.map((s) => (
+        <div class="cta-slide" style={`--pos: ${s.pos}`}>
+          <Picture
+            src={s.src}
+            formats={['avif', 'webp']}
+            widths={[768, s.src.width]}
+            sizes="100vw"
+            alt=""
+            loading="lazy"
+          />
+        </div>
+      ))
+    }
   </div>
   <div class="overlay" aria-hidden="true"></div>
 
@@ -39,6 +52,17 @@ import erciyesYol from '../assets/erciyes-yol.jpg';
     overflow: hidden;
     padding: 160px 0;
     text-align: center;
+  }
+  /* Slaytlar üst üste; JS yoksa yalnızca ilki görünür */
+  .cta-slide {
+    position: absolute;
+    inset: 0;
+  }
+  .cta-slide + .cta-slide {
+    opacity: 0;
+  }
+  .cta-slide :global(img) {
+    object-position: var(--pos);
   }
   .overlay {
     position: absolute;

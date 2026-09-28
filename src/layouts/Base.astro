@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import Analytics from '@vercel/analytics/astro';
 import { site, faqs } from '../config';
 
 const canonical = new URL('/', site.siteUrl).href;
@@ -97,6 +98,9 @@ const adsSendTo = adsId && site.googleAdsCallLabel ? `${adsId}/${site.googleAdsC
   </head>
   <body>
     <slot />
+
+    <!-- Vercel ziyaretçi istatistikleri (çerezsiz; yalnızca Vercel'de yayındayken veri toplar) -->
+    <Analytics />
 
     <!-- Arama / WhatsApp tıklamalarını Google Ads dönüşümü olarak bildirir (ID yoksa hiçbir şey yapmaz) -->
     <script is:inline define:vars={{ adsSendTo }}>

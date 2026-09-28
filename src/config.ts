@@ -4,16 +4,16 @@
 
 export const site = {
   // Firma bilgileri
-  brand: 'Kayseri Taksi', // Logoda ve metinlerde görünen ad
+  brand: 'Kayseri Park Taksi', // Logoda ve metinlerde görünen ad
   brandShort: 'K', // Logo kutusundaki harf
   city: 'Kayseri',
 
   // Telefon: görünen format ve arama formatı (başında +90, boşluksuz)
-  phoneDisplay: '0500 000 00 00',
-  phoneTel: '+905000000000',
+  phoneDisplay: '0540 392 83 93',
+  phoneTel: '+905403928393',
 
   // WhatsApp: ülke koduyla, + ve boşluk olmadan
-  whatsapp: '905000000000',
+  whatsapp: '905403928393',
   whatsappMessage: 'Merhaba, taksi çağırmak istiyorum. Konumumu gönderiyorum.',
 
   // Domain alındığında güncelleyin (astro.config.mjs içindeki "site" ile aynı olmalı)
@@ -71,7 +71,7 @@ export const features = [
   { title: '7 Gün 24 Saat', text: 'Bayram, tatil, gece demeden hizmetteyiz.' },
   { title: 'Hızlı Ulaşım', text: 'Aradığınızda hemen yola çıkar, kısa sürede yanınızda oluruz.' },
   { title: 'Temiz Araç', text: 'Bakımlı, temiz ve klimalı araçla konforlu yolculuk.' },
-  { title: 'Tüm Kayseri', text: 'Merkezden ilçelere kadar her yere gideriz.' },
+  { title: 'Tüm Türkiye', text: 'Kayseri içinde ve Kayseri çıkışlı her şehre gideriz.' },
 ];
 
 

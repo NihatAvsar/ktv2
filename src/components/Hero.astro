@@ -4,35 +4,55 @@ import { site, telHref, waHref } from '../config';
 import Icon from './Icon.astro';
 import heroMobil from '../assets/hero-mobil.jpg';
 import heroMasaustu from '../assets/hero-masaustu.jpg';
+import erciyesMobil from '../assets/erciyes-mobil.jpg';
 
-// Telefonda dikey Saat Kulesi (gece), geniş ekranda Erciyes
+// Arka plan slaytları: Saat Kulesi ve Erciyes sırayla döner (telefonda dikey, geniş ekranda yatay).
+// İlk slayt sabit açılış görseli; sonrakiler animations.ts ile yavaşça geçer.
+// pos: geniş ekranda fotoğrafın hangi kısmı görünsün (object-position)
+const slides = [
+  { mobil: heroMobil, masaustu: heroMasaustu, pos: 'center 70%', alt: `${site.city} Saat Kulesi ve Erciyes Dağı` },
+  { mobil: erciyesMobil, masaustu: heroMobil, pos: 'center 58%', alt: '' },
+];
+
 const mobilWidths = [480, 750, 1080];
 const masaustuWidths = [1024, 1600, 2400];
-const [mobilAvif, mobilWebp, masaustuAvif, masaustuWebp, fallback] = await Promise.all([
-  getImage({ src: heroMobil, widths: mobilWidths, format: 'avif' }),
-  getImage({ src: heroMobil, widths: mobilWidths, format: 'webp' }),
-  getImage({ src: heroMasaustu, widths: masaustuWidths, format: 'avif' }),
-  getImage({ src: heroMasaustu, widths: masaustuWidths, format: 'webp' }),
-  getImage({ src: heroMasaustu, width: 1600, format: 'jpg' }),
-]);
+// Küçük fotoğrafları büyütmemek için genişlikleri orijinal boyutla sınırla
+const fit = (src: ImageMetadata, widths: number[]) => {
+  const w = widths.filter((x) => x < src.width);
+  return [...w, Math.min(src.width, widths[widths.length - 1])];
+};
+
+const images = await Promise.all(
+  slides.map(async (s) => {
+    const mw = fit(s.mobil, mobilWidths);
+    const dw = fit(s.masaustu, masaustuWidths);
+    const [mobilAvif, mobilWebp, masaustuAvif, masaustuWebp, fallback] = await Promise.all([
+      getImage({ src: s.mobil, widths: mw, format: 'avif' }),
+      getImage({ src: s.mobil, widths: mw, format: 'webp' }),
+      getImage({ src: s.masaustu, widths: dw, format: 'avif' }),
+      getImage({ src: s.masaustu, widths: dw, format: 'webp' }),
+      getImage({ src: s.masaustu, width: Math.min(1600, s.masaustu.width), format: 'jpg' }),
+    ]);
+    return { ...s, mobilAvif, mobilWebp, masaustuAvif, masaustuWebp, fallback };
+  }),
+);
 
 const mobileMq = '(max-width: 767px)';
 ---
 
 <section class="hero" id="top">
   <div class="photo-bg" data-parallax>
-    <picture>
-      <source media={mobileMq} srcset={mobilAvif.srcSet.attribute} type="image/avif" sizes="100vw" />
-      <source media={mobileMq} srcset={mobilWebp.srcSet.attribute} type="image/webp" sizes="100vw" />
-      <source srcset={masaustuAvif.srcSet.attribute} type="image/avif" sizes="100vw" />
-      <source srcset={masaustuWebp.srcSet.attribute} type="image/webp" sizes="100vw" />
-      <img
-        src={fallback.src}
-        alt={`${site.city} Saat Kulesi ve Erciyes Dağı`}
-        fetchpriority="high"
-        decoding="async"
-      />
-    </picture>
+    {
+      images.map((s, i) => (
+        <picture class="hero-slide" aria-hidden={i > 0 ? 'true' : undefined} style={`--pos: ${s.pos}`}>
+          <source media={mobileMq} srcset={s.mobilAvif.srcSet.attribute} type="image/avif" sizes="100vw" />
+          <source media={mobileMq} srcset={s.mobilWebp.srcSet.attribute} type="image/webp" sizes="100vw" />
+          <source srcset={s.masaustuAvif.srcSet.attribute} type="image/avif" sizes="100vw" />
+          <source srcset={s.masaustuWebp.srcSet.attribute} type="image/webp" sizes="100vw" />
+          <img src={s.fallback.src} alt={s.alt} fetchpriority={i === 0 ? 'high' : 'low'} decoding="async" />
+        </picture>
+      ))
+    }
   </div>
   <div class="overlay" aria-hidden="true"></div>
 
@@ -78,8 +98,16 @@ const mobileMq = '(max-width: 767px)';
     overflow: hidden;
     background: var(--black);
   }
+  /* Slaytlar üst üste; JS yoksa yalnızca ilki görünür */
+  .hero-slide {
+    position: absolute;
+    inset: 0;
+  }
+  .hero-slide + .hero-slide {
+    opacity: 0;
+  }
   .photo-bg img {
-    object-position: center 70%;
+    object-position: var(--pos, center 70%);
   }
   .overlay {
     position: absolute;
