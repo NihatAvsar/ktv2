@@ -2,9 +2,10 @@
 import { site } from '../config';
 
 const [first, ...rest] = site.brand.split(' ');
+const href = Astro.url.pathname === '/' ? '#top' : '/';
 ---
 
-<a href="#top" class="logo" aria-label={`${site.brand} ana sayfa`}>
+<a href={href} class="logo" aria-label={`${site.brand} ana sayfa`}>
   <span class="logo-box">{site.brandShort}</span>
   <span class="logo-text">{first} <b>{rest.join(' ')}</b></span>
 </a>

@@ -29,9 +29,16 @@ import Icon from './Icon.astro';
             </div>
             <h3>{s.title}</h3>
             <p>{s.text}</p>
-            <a href={telHref} class="card-link" data-conv={`service-${s.icon}`}>
-              Hemen ara <Icon name="arrow" size={16} />
-            </a>
+            <div class="card-links">
+              <a href={telHref} class="card-link" data-conv={`service-${s.icon}`}>
+                Hemen ara <Icon name="arrow" size={16} />
+              </a>
+              {s.href && (
+                <a href={s.href} class="card-more">
+                  Detaylı bilgi
+                </a>
+              )}
+            </div>
           </article>
         ))
       }
@@ -120,8 +127,24 @@ import Icon from './Icon.astro';
     font-size: 15px;
     flex: 1;
   }
-  .card-link {
+  .card-links {
     margin-top: 22px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 22px;
+  }
+  .card-more {
+    font-weight: 700;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .card-more:hover {
+    color: var(--white);
+  }
+  .card-link {
     display: inline-flex;
     align-items: center;
     gap: 6px;

@@ -3,11 +3,14 @@ import { site, telHref } from '../config';
 import Logo from './Logo.astro';
 import Icon from './Icon.astro';
 
+// Alt sayfalarda ana sayfadaki bölümlere gitmek için linklerin başına "/" eklenir
+const isHome = Astro.url.pathname === '/';
+const home = isHome ? '' : '/';
 const nav = [
-  { href: '#top', label: 'Ana Sayfa' },
-  { href: '#hizmetler', label: 'Hizmetler' },
-  { href: '#hakkimizda', label: 'Hakkımızda' },
-  { href: '#sss', label: 'SSS' },
+  { href: isHome ? '#top' : '/', label: 'Ana Sayfa' },
+  { href: `${home}#hizmetler`, label: 'Hizmetler' },
+  { href: `${home}#hakkimizda`, label: 'Hakkımızda' },
+  { href: `${home}#sss`, label: 'SSS' },
   { href: '#iletisim', label: 'İletişim' },
 ];
 ---

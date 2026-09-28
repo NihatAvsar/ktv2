@@ -1,0 +1,363 @@
+---
+// Hizmet / bölge sayfaları. İçerikler src/config.ts → landingPages içinde.
+import { Picture } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Faq from '../components/Faq.astro';
+import FinalCta from '../components/FinalCta.astro';
+import Footer from '../components/Footer.astro';
+import LegalDialog from '../components/LegalDialog.astro';
+import MobileCallBar from '../components/MobileCallBar.astro';
+import Icon from '../components/Icon.astro';
+import { site, features, landingPages, telHref, waHref, type LandingPage } from '../config';
+
+import havalimani from '../assets/konum-havalimani.jpg';
+import otogar from '../assets/konum-otogar.jpg';
+import hastane from '../assets/konum-sehir-hastanesi.jpg';
+import talas from '../assets/konum-talas.jpg';
+import meydan from '../assets/konum-meydan.jpg';
+import erciyesYol from '../assets/erciyes-yol.jpg';
+import taksiYol from '../assets/taksi-gece-yol.jpg';
+import taksiPark from '../assets/taksi-gece-park.jpg';
+
+// config.ts'deki "image" adlarının karşılığı olan fotoğraflar
+const images: Record<string, ImageMetadata> = {
+  havalimani,
+  otogar,
+  hastane,
+  talas,
+  melikgazi: meydan,
+  erciyes: erciyesYol,
+  sehirlerarasi: taksiYol,
+  kocasinan: taksiPark,
+};
+
+export function getStaticPaths() {
+  return landingPages.map((page) => ({ params: { slug: page.slug }, props: { page } }));
+}
+
+interface Props {
+  page: LandingPage;
+}
+
+const { page } = Astro.props;
+const image = images[page.image] ?? meydan;
+// Küçük fotoğraflar tam ekranda bulanık görünür: arka plana geniş bir fotoğraf konur,
+// konum fotoğrafı metnin içinde kendi boyutunda gösterilir
+const heroImage = image.width >= 1400 ? image : erciyesYol;
+const inlinePhoto = heroImage !== image;
+const others = landingPages.filter((p) => p.slug !== page.slug);
+const conv = `lp-${page.slug}`;
+---
+
+<Base
+  title={page.title}
+  description={page.description}
+  path={`/${page.slug}`}
+  image={heroImage}
+  faqs={page.faqs}
+  breadcrumb={page.h1}
+  service={page.h1}
+>
+  <Header />
+  <main>
+    <section class="lp-hero">
+      <div class="photo-bg" data-parallax>
+        <Picture
+          src={heroImage}
+          formats={['avif', 'webp']}
+          widths={[...[640, 1024].filter((w) => w < heroImage.width), Math.min(1920, heroImage.width)]}
+          sizes="100vw"
+          alt={inlinePhoto ? '' : page.imageAlt}
+          loading="eager"
+          fetchpriority="high"
+        />
+      </div>
+      <div class="overlay" aria-hidden="true"></div>
+
+      <div class="container lp-hero-content">
+        <nav class="crumbs" aria-label="Sayfa yolu">
+          <a href="/">Ana Sayfa</a>
+          <span aria-hidden="true">›</span>
+          <span aria-current="page">{page.h1}</span>
+        </nav>
+        <span class="eyebrow">{page.eyebrow}</span>
+        <h1>{page.h1}</h1>
+        <p class="lead">{page.intro}</p>
+        <div class="actions" id="hero-actions">
+          <a href={telHref} class="btn btn-yellow" data-conv={`${conv}-call`}>
+            <Icon name="phone" /> {site.phoneDisplay}
+          </a>
+          <a href={waHref} class="btn btn-glass" target="_blank" rel="noopener" data-conv={`${conv}-whatsapp`}>
+            <Icon name="chat" /> WhatsApp’tan Yaz
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container lp-body">
+        <div class="lp-text">
+          {
+            inlinePhoto && (
+              <figure class="lp-photo" style={`max-width: ${image.width}px`} data-reveal>
+                <Picture src={image} formats={['avif', 'webp']} alt={page.imageAlt} loading="lazy" />
+                <figcaption>{page.imageAlt}</figcaption>
+              </figure>
+            )
+          }
+          {
+            page.sections.map((s) => (
+              <div class="block" data-reveal>
+                <h2>{s.h}</h2>
+                <p>{s.p}</p>
+              </div>
+            ))
+          }
+        </div>
+
+        <aside class="call-card" data-reveal>
+          <span class="eyebrow">7/24 hizmet</span>
+          <p class="call-title">Hemen taksi çağırın</p>
+          <ul>
+            {
+              features.map((f) => (
+                <li>
+                  <Icon name="check" size={18} /> {f.title}
+                </li>
+              ))
+            }
+          </ul>
+          <a href={telHref} class="btn btn-yellow" data-conv={`${conv}-card-call`}>
+            <Icon name="phone" /> Hemen Ara
+          </a>
+          <a href={waHref} class="btn btn-wa" target="_blank" rel="noopener" data-conv={`${conv}-card-whatsapp`}>
+            <Icon name="chat" /> WhatsApp
+          </a>
+        </aside>
+      </div>
+    </section>
+
+    <Faq items={page.faqs} />
+
+    <section class="section others">
+      <div class="container">
+        <span class="eyebrow" data-reveal>Diğer hizmetlerimiz</span>
+        <h2 class="section-title" data-reveal>{site.city}’nin her yerine <em>taksi.</em></h2>
+        <ul class="other-list">
+          {
+            others.map((p) => (
+              <li data-reveal>
+                <a href={`/${p.slug}`}>
+                  {p.h1} <Icon name="arrow" size={16} />
+                </a>
+              </li>
+            ))
+          }
+          <li data-reveal>
+            <a href="/">{site.city} Taksi <Icon name="arrow" size={16} /></a>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <FinalCta />
+  </main>
+  <Footer />
+  <LegalDialog />
+  <MobileCallBar />
+</Base>
+
+<script>
+  import '../scripts/animations.ts';
+</script>
+
+<style>
+  .lp-hero {
+    position: relative;
+    min-height: 72vh;
+    min-height: 72svh;
+    display: flex;
+    overflow: hidden;
+    background: var(--black);
+  }
+  .overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(11, 11, 12, 0.6) 0%, rgba(11, 11, 12, 0) 35%),
+      linear-gradient(0deg, rgba(11, 11, 12, 0.97) 0%, rgba(11, 11, 12, 0.45) 50%, rgba(11, 11, 12, 0.1) 80%),
+      linear-gradient(90deg, rgba(11, 11, 12, 0.7) 0%, rgba(11, 11, 12, 0) 65%);
+  }
+  .lp-hero-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding-top: calc(var(--header-h) + 40px);
+    padding-bottom: 64px;
+  }
+  .crumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 22px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  .crumbs a:hover {
+    color: var(--yellow);
+  }
+  h1 {
+    font-size: clamp(40px, 6.4vw, 84px);
+    font-weight: 800;
+    max-width: 900px;
+    text-wrap: balance;
+  }
+  .lead {
+    margin-top: 16px;
+    color: rgba(255, 255, 255, 0.82);
+    font-size: clamp(16px, 1.6vw, 20px);
+    max-width: 560px;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 30px;
+  }
+
+  .lp-body {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 64px;
+    align-items: start;
+  }
+  .lp-text {
+    display: grid;
+    gap: 44px;
+  }
+  .lp-photo {
+    margin: 0;
+  }
+  .lp-photo :global(img) {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+  }
+  .lp-photo figcaption {
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .block h2 {
+    font-size: clamp(26px, 3vw, 36px);
+    font-weight: 800;
+  }
+  .block p {
+    margin-top: 14px;
+    color: var(--muted);
+    font-size: 17px;
+  }
+  .call-card {
+    position: sticky;
+    top: calc(var(--header-h) + 32px);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 32px;
+    background: var(--black-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+  .call-card .eyebrow {
+    margin-bottom: 0;
+  }
+  .call-title {
+    font-size: 26px;
+    font-weight: 800;
+    line-height: 1.2;
+  }
+  .call-card ul {
+    list-style: none;
+    margin: 6px 0 10px;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 600;
+  }
+  .call-card li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .call-card li :global(svg) {
+    color: var(--yellow);
+  }
+
+  .others {
+    padding-top: 0;
+  }
+  .other-list {
+    list-style: none;
+    margin: 40px 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .other-list a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 22px;
+    background: var(--black-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    transition:
+      border-color 0.2s,
+      color 0.2s;
+  }
+  .other-list a :global(svg) {
+    color: var(--yellow);
+    flex: none;
+  }
+  .other-list a:hover {
+    border-color: rgba(255, 196, 0, 0.6);
+    color: var(--yellow);
+  }
+
+  @media (max-width: 960px) {
+    .lp-body {
+      grid-template-columns: 1fr;
+      gap: 48px;
+    }
+    .call-card {
+      position: static;
+    }
+    .other-list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 720px) {
+    .lp-hero-content {
+      padding-bottom: 36px;
+    }
+    .actions {
+      flex-direction: column;
+      width: 100%;
+      gap: 10px;
+    }
+    .actions .btn {
+      width: 100%;
+    }
+    .other-list {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

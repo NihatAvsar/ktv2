@@ -1,22 +1,81 @@
 ---
 import '../styles/global.css';
 import Analytics from '@vercel/analytics/astro';
-import { site, faqs } from '../config';
+import { getImage } from 'astro:assets';
+import { site } from '../config';
+import heroMasaustu from '../assets/hero-masaustu.jpg';
 
-const canonical = new URL('/', site.siteUrl).href;
+interface Props {
+  title?: string;
+  description?: string;
+  path?: string; // "/" veya "/talas-taksi" gibi
+  image?: ImageMetadata; // paylaşım görseli (WhatsApp, Facebook önizlemesi)
+  faqs?: { q: string; a: string }[];
+  breadcrumb?: string; // alt sayfalarda "Ana Sayfa › <bu ad>"
+  service?: string; // alt sayfalarda hizmetin adı
+}
 
-const jsonLd = [
+const {
+  title = site.title,
+  description = site.description,
+  path = '/',
+  image = heroMasaustu,
+  faqs,
+  breadcrumb,
+  service,
+} = Astro.props;
+
+const home = new URL('/', site.siteUrl).href;
+const canonical = new URL(path, site.siteUrl).href;
+const ogImage = await getImage({ src: image, width: Math.min(1200, image.width), format: 'jpg' });
+const ogImageUrl = new URL(ogImage.src, site.siteUrl).href;
+const taxiId = `${home}#taksi`;
+
+const jsonLd: Record<string, unknown>[] = [
   {
     '@context': 'https://schema.org',
     '@type': 'TaxiService',
+    '@id': taxiId,
     name: site.brand,
     telephone: site.phoneTel,
-    areaServed: site.city,
+    url: home,
+    image: new URL((await getImage({ src: heroMasaustu, width: 1200, format: 'jpg' })).src, site.siteUrl).href,
+    areaServed: [
+      { '@type': 'City', name: site.city },
+      ...site.areas.map((name) => ({ '@type': 'AdministrativeArea', name, containedInPlace: site.city })),
+    ],
     openingHours: 'Mo-Su 00:00-23:59',
     priceRange: '₺₺',
-    url: canonical,
+    ...(site.sameAs.length ? { sameAs: site.sameAs } : {}),
   },
-  {
+];
+
+if (service) {
+  jsonLd.push({
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: service,
+    serviceType: 'Taksi',
+    url: canonical,
+    description,
+    provider: { '@id': taxiId },
+    areaServed: { '@type': 'City', name: site.city },
+  });
+}
+
+if (breadcrumb) {
+  jsonLd.push({
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Ana Sayfa', item: home },
+      { '@type': 'ListItem', position: 2, name: breadcrumb, item: canonical },
+    ],
+  });
+}
+
+if (faqs?.length) {
+  jsonLd.push({
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
     mainEntity: faqs.map((f) => ({
@@ -24,8 +83,8 @@ const jsonLd = [
       name: f.q,
       acceptedAnswer: { '@type': 'Answer', text: f.a },
     })),
-  },
-];
+  });
+}
 
 const adsId = site.googleAdsId;
 const adsSendTo = adsId && site.googleAdsCallLabel ? `${adsId}/${site.googleAdsCallLabel}` : '';
@@ -36,19 +95,24 @@ const adsSendTo = adsId && site.googleAdsCallLabel ? `${adsId}/${site.googleAdsC
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>{site.title}</title>
-    <meta name="description" content={site.description} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
     <meta name="robots" content="index,follow" />
     <link rel="canonical" href={canonical} />
     <meta name="theme-color" content="#ffc400" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    {site.googleSiteVerification && <meta name="google-site-verification" content={site.googleSiteVerification} />}
 
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="tr_TR" />
-    <meta property="og:title" content={site.title} />
-    <meta property="og:description" content={site.description} />
+    <meta property="og:site_name" content={site.brand} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content={String(ogImage.attributes.width)} />
+    <meta property="og:image:height" content={String(ogImage.attributes.height)} />
+    <meta name="twitter:card" content="summary_large_image" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

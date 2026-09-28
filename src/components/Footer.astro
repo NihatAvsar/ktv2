@@ -1,9 +1,11 @@
 ---
-import { site, telHref, waHref, mapsHref } from '../config';
+import { site, telHref, waHref, mapsHref, landingPages } from '../config';
 import Logo from './Logo.astro';
 import Icon from './Icon.astro';
 
 const year = new Date().getFullYear();
+const isHome = Astro.url.pathname === '/';
+const home = isHome ? '' : '/';
 ---
 
 <footer class="footer" id="iletisim">
@@ -18,10 +20,17 @@ const year = new Date().getFullYear();
     <div>
       <h3>Hızlı Linkler</h3>
       <ul>
-        <li><a href="#top">Ana Sayfa</a></li>
-        <li><a href="#hizmetler">Hizmetler</a></li>
-        <li><a href="#hakkimizda">Hakkımızda</a></li>
-        <li><a href="#sss">Sıkça Sorulan Sorular</a></li>
+        <li><a href={isHome ? '#top' : '/'}>Ana Sayfa</a></li>
+        <li><a href={`${home}#hizmetler`}>Hizmetler</a></li>
+        <li><a href={`${home}#hakkimizda`}>Hakkımızda</a></li>
+        <li><a href={`${home}#sss`}>Sıkça Sorulan Sorular</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h3>Hizmet Bölgeleri</h3>
+      <ul>
+        {landingPages.map((p) => <li><a href={`/${p.slug}`}>{p.menu}</a></li>)}
       </ul>
     </div>
 
@@ -59,7 +68,7 @@ const year = new Date().getFullYear();
   }
   .footer-grid {
     display: grid;
-    grid-template-columns: 1.4fr 1fr 1fr;
+    grid-template-columns: 1.3fr 1fr 1fr 1fr;
     gap: 40px;
   }
   .about {
