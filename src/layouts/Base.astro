@@ -1,0 +1,110 @@
+---
+import '../styles/global.css';
+import { site, faqs } from '../config';
+
+const canonical = new URL('/', site.siteUrl).href;
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'TaxiService',
+    name: site.brand,
+    telephone: site.phoneTel,
+    areaServed: site.city,
+    openingHours: 'Mo-Su 00:00-23:59',
+    priceRange: '₺₺',
+    url: canonical,
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+
+const adsId = site.googleAdsId;
+const adsSendTo = adsId && site.googleAdsCallLabel ? `${adsId}/${site.googleAdsCallLabel}` : '';
+---
+
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{site.title}</title>
+    <meta name="description" content={site.description} />
+    <meta name="robots" content="index,follow" />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#ffc400" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="tr_TR" />
+    <meta property="og:title" content={site.title} />
+    <meta property="og:description" content={site.description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Açılış animasyonu başlamadan önce hero yazılarının bir an görünüp kaybolmasını önler.
+         Animasyon dosyası 2.5 sn içinde çalışmazsa içerik yine de görünür hâle gelir. -->
+    <script is:inline>
+      if (matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+        var r = document.documentElement;
+        r.classList.add('anim-pending');
+        setTimeout(function () {
+          r.classList.remove('anim-pending');
+        }, 2500);
+      }
+    </script>
+    <style is:global>
+      .anim-pending .hero [data-hero] {
+        opacity: 0;
+      }
+      .anim-pending .hero .big-char {
+        transform: translateY(110%);
+      }
+    </style>
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+    {
+      adsId && (
+        <>
+          <script async src={`https://www.googletagmanager.com/gtag/js?id=${adsId}`} />
+          <script is:inline define:vars={{ adsId }}>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+              dataLayer.push(arguments);
+            }
+            window.gtag = gtag;
+            gtag('js', new Date());
+            gtag('config', adsId);
+          </script>
+        </>
+      )
+    }
+  </head>
+  <body>
+    <slot />
+
+    <!-- Arama / WhatsApp tıklamalarını Google Ads dönüşümü olarak bildirir (ID yoksa hiçbir şey yapmaz) -->
+    <script is:inline define:vars={{ adsSendTo }}>
+      document.addEventListener('click', function (e) {
+        var link = e.target.closest && e.target.closest('[data-conv]');
+        if (!link || !adsSendTo || typeof window.gtag !== 'function') return;
+        window.gtag('event', 'conversion', { send_to: adsSendTo, event_label: link.dataset.conv });
+      });
+    </script>
+  </body>
+</html>

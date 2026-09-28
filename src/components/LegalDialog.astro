@@ -1,0 +1,114 @@
+---
+import { site } from '../config';
+import Icon from './Icon.astro';
+---
+
+<dialog class="legal" id="legal-gizlilik" aria-labelledby="gizlilik-title">
+  <button class="close" type="button" aria-label="Kapat" data-close-legal><Icon name="close" /></button>
+  <h2 id="gizlilik-title">Gizlilik Politikası</h2>
+  <p>
+    Bu internet sitesi, {site.brand} hizmetleri hakkında bilgi vermek amacıyla hazırlanmıştır. Sitede
+    üyelik, form veya ödeme alanı bulunmamaktadır; ziyaretçilerden doğrudan kişisel veri toplanmaz.
+  </p>
+  <p>
+    Sitedeki “Ara” ve “WhatsApp” bağlantıları, cihazınızın telefon uygulamasını veya WhatsApp’ı açar.
+    Bu kanallar üzerinden bizimle paylaştığınız bilgiler (telefon numarası, konum vb.) yalnızca taksi
+    hizmetinin sağlanması amacıyla kullanılır ve üçüncü kişilerle paylaşılmaz.
+  </p>
+  <p>
+    Reklam performansını ölçmek amacıyla Google Ads dönüşüm ölçümü kullanılabilir. Bu durumda Google,
+    kendi gizlilik politikası çerçevesinde çerez ve benzeri teknolojiler kullanabilir. Tarayıcı
+    ayarlarınızdan çerezleri dilediğiniz zaman engelleyebilir veya silebilirsiniz.
+  </p>
+  <p>Sorularınız için bizimle <strong>{site.phoneDisplay}</strong> numarasından iletişime geçebilirsiniz.</p>
+</dialog>
+
+<dialog class="legal" id="legal-kvkk" aria-labelledby="kvkk-title">
+  <button class="close" type="button" aria-label="Kapat" data-close-legal><Icon name="close" /></button>
+  <h2 id="kvkk-title">KVKK Aydınlatma Metni</h2>
+  <p>
+    6698 sayılı Kişisel Verilerin Korunması Kanunu (“KVKK”) uyarınca veri sorumlusu sıfatıyla
+    {site.brand} olarak, telefon veya WhatsApp üzerinden bizimle iletişime geçtiğinizde paylaştığınız
+    ad, telefon numarası ve konum bilgilerinizi işlemekteyiz.
+  </p>
+  <p>
+    <strong>İşleme amacı:</strong> Taksi talebinizin alınması, aracın bulunduğunuz konuma yönlendirilmesi
+    ve hizmetin ifası.
+  </p>
+  <p>
+    <strong>Hukuki sebep:</strong> KVKK m.5/2-c uyarınca bir sözleşmenin kurulması veya ifasıyla doğrudan
+    ilgili olması ve m.5/2-f uyarınca meşru menfaat.
+  </p>
+  <p>
+    <strong>Aktarım:</strong> Kişisel verileriniz, yasal zorunluluklar dışında üçüncü kişilere aktarılmaz.
+  </p>
+  <p>
+    <strong>Haklarınız:</strong> KVKK m.11 kapsamında verilerinizin işlenip işlenmediğini öğrenme,
+    düzeltilmesini veya silinmesini talep etme ve itiraz etme haklarına sahipsiniz. Taleplerinizi
+    <strong>{site.phoneDisplay}</strong> numarası üzerinden iletebilirsiniz.
+  </p>
+</dialog>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-open-legal]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelector<HTMLDialogElement>(`#legal-${btn.dataset.openLegal}`)?.showModal();
+    });
+  });
+  document.querySelectorAll<HTMLDialogElement>('dialog.legal').forEach((dlg) => {
+    dlg.querySelector('[data-close-legal]')?.addEventListener('click', () => dlg.close());
+    // Dışarı tıklayınca kapat
+    dlg.addEventListener('click', (e) => {
+      if (e.target === dlg) dlg.close();
+    });
+  });
+</script>
+
+<style>
+  .legal {
+    width: min(640px, calc(100% - 32px));
+    max-height: 85vh;
+    border: 0;
+    border-radius: var(--radius);
+    padding: 36px 32px 28px;
+    color: #16161a;
+    background: #fff;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+  }
+  .legal::backdrop {
+    background: rgba(0, 0, 0, 0.6);
+  }
+  h2 {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 16px;
+    padding-right: 40px;
+  }
+  p {
+    color: #45454c;
+    font-size: 15px;
+    margin-top: 12px;
+  }
+  .close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 0;
+    background: #f2f2f4;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    color: #16161a;
+  }
+  .close:hover {
+    background: var(--yellow);
+  }
+  @media (max-width: 520px) {
+    .legal {
+      padding: 28px 20px 22px;
+    }
+  }
+</style>

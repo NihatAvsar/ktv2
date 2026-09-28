@@ -1,0 +1,232 @@
+---
+import { getImage } from 'astro:assets';
+import { site, telHref, waHref } from '../config';
+import Icon from './Icon.astro';
+import heroMobil from '../assets/hero-mobil.jpg';
+import heroMasaustu from '../assets/hero-masaustu.jpg';
+
+// Telefonda dikey Saat Kulesi (gece), geniş ekranda Erciyes
+const mobilWidths = [480, 750, 1080];
+const masaustuWidths = [1024, 1600, 2400];
+const [mobilAvif, mobilWebp, masaustuAvif, masaustuWebp, fallback] = await Promise.all([
+  getImage({ src: heroMobil, widths: mobilWidths, format: 'avif' }),
+  getImage({ src: heroMobil, widths: mobilWidths, format: 'webp' }),
+  getImage({ src: heroMasaustu, widths: masaustuWidths, format: 'avif' }),
+  getImage({ src: heroMasaustu, widths: masaustuWidths, format: 'webp' }),
+  getImage({ src: heroMasaustu, width: 1600, format: 'jpg' }),
+]);
+
+const mobileMq = '(max-width: 767px)';
+---
+
+<section class="hero" id="top">
+  <div class="photo-bg" data-parallax>
+    <picture>
+      <source media={mobileMq} srcset={mobilAvif.srcSet.attribute} type="image/avif" sizes="100vw" />
+      <source media={mobileMq} srcset={mobilWebp.srcSet.attribute} type="image/webp" sizes="100vw" />
+      <source srcset={masaustuAvif.srcSet.attribute} type="image/avif" sizes="100vw" />
+      <source srcset={masaustuWebp.srcSet.attribute} type="image/webp" sizes="100vw" />
+      <img
+        src={fallback.src}
+        alt={`${site.city} Saat Kulesi ve Erciyes Dağı`}
+        fetchpriority="high"
+        decoding="async"
+      />
+    </picture>
+  </div>
+  <div class="overlay" aria-hidden="true"></div>
+
+  <div class="container hero-content">
+    <div class="top">
+      <span class="eyebrow" data-hero>{site.city}’de gece gündüz</span>
+      <h1>
+        <span class="big" aria-label="7/24">
+          {['7', '/', '2', '4'].map((c) => <span class="big-char" aria-hidden="true">{c}</span>)}
+        </span>
+        <span class="h1-text" data-hero>{site.city} Taksi</span>
+      </h1>
+      <p class="lead" data-hero>Hızlı ve güvenilir taksi, tek telefonla kapınızda.</p>
+    </div>
+
+    <div class="bottom">
+      <a href={telHref} class="big-phone" data-conv="hero-phone" data-hero>
+        <Icon name="phone" size={26} />
+        {site.phoneDisplay}
+      </a>
+      <div class="actions" id="hero-actions" data-hero>
+        <a href={telHref} class="btn btn-yellow" data-conv="hero-call">
+          <Icon name="phone" /> Hemen Taksi Çağır
+        </a>
+        <a href={waHref} class="btn btn-glass" target="_blank" rel="noopener" data-conv="hero-whatsapp">
+          <Icon name="chat" /> WhatsApp’tan Yaz
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <a href="#hizmetler" class="scroll-hint" aria-label="Aşağı kaydır">
+    <span></span>
+  </a>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    overflow: hidden;
+    background: var(--black);
+  }
+  .photo-bg img {
+    object-position: center 70%;
+  }
+  .overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(11, 11, 12, 0.55) 0%, rgba(11, 11, 12, 0) 35%),
+      linear-gradient(0deg, rgba(11, 11, 12, 0.95) 0%, rgba(11, 11, 12, 0.35) 45%, rgba(11, 11, 12, 0) 70%),
+      linear-gradient(90deg, rgba(11, 11, 12, 0.75) 0%, rgba(11, 11, 12, 0) 65%);
+  }
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 36px;
+    padding-top: calc(var(--header-h) + 40px);
+    padding-bottom: 88px;
+  }
+  .eyebrow {
+    margin-bottom: 8px;
+  }
+  h1 {
+    display: flex;
+    flex-direction: column;
+  }
+  .big {
+    display: flex;
+    font-size: clamp(120px, 21vw, 290px);
+    line-height: 0.82;
+    font-weight: 800;
+    letter-spacing: -0.06em;
+    color: var(--yellow);
+    overflow: hidden;
+    padding: 0.04em 0 0.06em;
+    text-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  }
+  .big-char {
+    display: inline-block;
+  }
+  .h1-text {
+    margin-top: 10px;
+    font-size: clamp(34px, 4.6vw, 62px);
+    font-weight: 800;
+  }
+  .lead {
+    margin-top: 14px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: clamp(16px, 1.6vw, 20px);
+    max-width: 520px;
+  }
+  .big-phone {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    font-size: clamp(30px, 3.6vw, 44px);
+    font-weight: 800;
+    letter-spacing: 0.01em;
+  }
+  .big-phone :global(svg) {
+    color: var(--yellow);
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 22px;
+  }
+  .scroll-hint {
+    position: absolute;
+    z-index: 1;
+    right: 40px;
+    bottom: 40px;
+    width: 28px;
+    height: 46px;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+  }
+  .scroll-hint span {
+    position: absolute;
+    left: 50%;
+    top: 8px;
+    width: 4px;
+    height: 8px;
+    margin-left: -2px;
+    border-radius: 2px;
+    background: var(--yellow);
+    animation: wheel 1.8s ease-in-out infinite;
+  }
+  @keyframes wheel {
+    0% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    70% {
+      transform: translateY(14px);
+      opacity: 0;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .photo-bg img {
+      object-position: center 62%;
+    }
+    .overlay {
+      background:
+        linear-gradient(180deg, rgba(11, 11, 12, 0.7) 0%, rgba(11, 11, 12, 0.1) 42%, rgba(11, 11, 12, 0) 55%),
+        linear-gradient(0deg, rgba(11, 11, 12, 0.97) 0%, rgba(11, 11, 12, 0.6) 30%, rgba(11, 11, 12, 0) 52%);
+    }
+    .hero-content {
+      justify-content: space-between;
+      padding-top: calc(var(--header-h) + 18px);
+      padding-bottom: 28px;
+      gap: 24px;
+    }
+    .big {
+      font-size: clamp(96px, 33vw, 150px);
+    }
+    .h1-text {
+      font-size: 34px;
+      margin-top: 6px;
+    }
+    .lead {
+      font-size: 16px;
+      margin-top: 8px;
+    }
+    .big-phone {
+      font-size: 30px;
+    }
+    .actions {
+      flex-direction: column;
+      margin-top: 16px;
+      gap: 10px;
+    }
+    .actions .btn {
+      width: 100%;
+    }
+    .scroll-hint {
+      display: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-hint span {
+      animation: none;
+    }
+  }
+</style>

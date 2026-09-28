@@ -1,0 +1,137 @@
+---
+import { site, telHref, waHref, mapsHref } from '../config';
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer" id="iletisim">
+  <div class="container footer-grid">
+    <div>
+      <Logo />
+      <p class="about">
+        {site.city}’de 7/24 taksi hizmeti. Hızlı, güvenilir ve konforlu ulaşım için tek telefon yeterli.
+      </p>
+    </div>
+
+    <div>
+      <h3>Hızlı Linkler</h3>
+      <ul>
+        <li><a href="#top">Ana Sayfa</a></li>
+        <li><a href="#hizmetler">Hizmetler</a></li>
+        <li><a href="#hakkimizda">Hakkımızda</a></li>
+        <li><a href="#sss">Sıkça Sorulan Sorular</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h3>İletişim</h3>
+      <ul class="contact">
+        <li><a href={telHref} data-conv="footer-call"><Icon name="phone" size={16} /> {site.phoneDisplay}</a></li>
+        <li>
+          <a href={waHref} target="_blank" rel="noopener" data-conv="footer-whatsapp">
+            <Icon name="chat" size={16} /> WhatsApp’tan Yaz
+          </a>
+        </li>
+        <li><a href={mapsHref} target="_blank" rel="noopener"><Icon name="pin" size={16} /> Yol Tarifi Al</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container bottom">
+    <span>© {year} {site.brand}</span>
+    <span class="credit">
+      Fotoğraflar: Özgür Avşar, ömer faruk sezer, Muhammed Kösedağ /
+      <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a>
+    </span>
+    <span>
+      <button type="button" data-open-legal="gizlilik">Gizlilik Politikası</button> ·
+      <button type="button" data-open-legal="kvkk">KVKK</button>
+    </span>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    padding: 72px 0 28px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    gap: 40px;
+  }
+  .about {
+    margin-top: 18px;
+    color: #a9a9b1;
+    font-size: 14px;
+    max-width: 340px;
+  }
+  h3 {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 10px;
+  }
+  ul a {
+    color: #a9a9b1;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  ul a:hover {
+    color: var(--yellow);
+  }
+  .contact :global(svg) {
+    color: var(--yellow);
+  }
+  .bottom {
+    margin-top: 56px;
+    padding-top: 22px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 13px;
+    color: #85858d;
+  }
+  .bottom button {
+    background: none;
+    border: 0;
+    padding: 0;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+  }
+  .credit a {
+    text-decoration: underline;
+  }
+  .bottom button:hover {
+    color: var(--yellow);
+  }
+
+  @media (max-width: 820px) {
+    .footer-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .footer-grid > div:first-child {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (max-width: 720px) {
+    .footer {
+      padding-bottom: 96px; /* mobil alt çubuk için boşluk */
+    }
+  }
+</style>

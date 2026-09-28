@@ -1,0 +1,146 @@
+---
+import { site, telHref } from '../config';
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+
+const nav = [
+  { href: '#top', label: 'Ana Sayfa' },
+  { href: '#hizmetler', label: 'Hizmetler' },
+  { href: '#hakkimizda', label: 'Hakkımızda' },
+  { href: '#sss', label: 'SSS' },
+  { href: '#iletisim', label: 'İletişim' },
+];
+---
+
+<header class="header">
+  <div class="container header-inner">
+    <Logo />
+
+    <nav id="site-nav" class="nav" aria-label="Ana menü">
+      {nav.map((item) => <a href={item.href}>{item.label}</a>)}
+      <a href={telHref} class="btn btn-yellow nav-call" data-conv="header-call">
+        <Icon name="phone" /> Ara: {site.phoneDisplay}
+      </a>
+    </nav>
+
+    <button class="menu-btn" aria-label="Menüyü aç" aria-expanded="false" aria-controls="site-nav">
+      <Icon name="menu" size={26} class="icon-open" />
+      <Icon name="close" size={26} class="icon-close" />
+    </button>
+  </div>
+</header>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('.menu-btn')!;
+  const nav = document.getElementById('site-nav')!;
+  const setOpen = (open: boolean) => {
+    nav.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', String(open));
+    btn.setAttribute('aria-label', open ? 'Menüyü kapat' : 'Menüyü aç');
+  };
+  btn.addEventListener('click', () => setOpen(!nav.classList.contains('open')));
+  nav.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+
+  // Aşağı kaydırınca şeffaf header'ı siyaha çevir
+  const header = document.querySelector<HTMLElement>('.header')!;
+  const onScroll = () => header.classList.toggle('scrolled', window.scrollY > 40);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+</script>
+
+<style>
+  .header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    border-bottom: 1px solid transparent;
+    transition:
+      background 0.3s ease,
+      border-color 0.3s ease;
+  }
+  .header.scrolled,
+  .header:has(.nav.open) {
+    background: rgba(11, 11, 12, 0.85);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom-color: var(--line);
+  }
+  .header-inner {
+    height: var(--header-h);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 26px;
+  }
+  .nav a:not(.btn) {
+    color: rgba(255, 255, 255, 0.82);
+    font-weight: 600;
+    font-size: 14px;
+    transition: color 0.15s;
+  }
+  .nav a:not(.btn):hover {
+    color: var(--yellow);
+  }
+  .nav-call {
+    min-height: 44px;
+    padding: 0 20px;
+    font-size: 13px;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  .menu-btn {
+    display: none;
+    background: none;
+    border: 0;
+    color: var(--white);
+    padding: 6px;
+    cursor: pointer;
+  }
+  .menu-btn :global(.icon-close) {
+    display: none;
+  }
+  .menu-btn[aria-expanded='true'] :global(.icon-open) {
+    display: none;
+  }
+  .menu-btn[aria-expanded='true'] :global(.icon-close) {
+    display: block;
+  }
+
+  @media (max-width: 960px) {
+    .menu-btn {
+      display: block;
+    }
+    .nav {
+      position: absolute;
+      top: var(--header-h);
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      padding: 8px 16px 20px;
+      background: var(--black);
+      border-bottom: 1px solid var(--line);
+      display: none;
+    }
+    .nav.open {
+      display: flex;
+    }
+    .nav a:not(.btn) {
+      padding: 14px 4px;
+      font-size: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .nav-call {
+      margin-top: 16px;
+      min-height: 52px;
+    }
+  }
+</style>

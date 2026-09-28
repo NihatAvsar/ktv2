@@ -1,0 +1,58 @@
+---
+import { telHref, waHref } from '../config';
+import Icon from './Icon.astro';
+---
+
+<div class="callbar" role="region" aria-label="Hızlı iletişim">
+  <a href={telHref} class="btn btn-yellow" data-conv="mobilebar-call"><Icon name="phone" /> Hemen Ara</a>
+  <a href={waHref} class="btn btn-wa" target="_blank" rel="noopener" data-conv="mobilebar-whatsapp">
+    <Icon name="chat" /> WhatsApp
+  </a>
+</div>
+
+<script>
+  // Açılıştaki butonlar ekrandayken alt çubuğu gizle, ekrandan çıkınca göster
+  const bar = document.querySelector<HTMLElement>('.callbar')!;
+  const heroActions = document.getElementById('hero-actions');
+  if (heroActions && 'IntersectionObserver' in window) {
+    new IntersectionObserver(([entry]) => {
+      bar.classList.toggle('hidden', entry.isIntersecting);
+    }).observe(heroActions);
+  }
+</script>
+
+<style>
+  .callbar {
+    display: none;
+  }
+  @media (max-width: 720px) {
+    .callbar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 60;
+      padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+      background: rgba(11, 11, 12, 0.9);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid var(--line);
+      transition: transform 0.35s ease;
+    }
+    .callbar.hidden {
+      transform: translateY(110%);
+    }
+    .callbar .btn {
+      min-height: 52px;
+      padding: 0 12px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .callbar {
+      transition: none;
+    }
+  }
+</style>

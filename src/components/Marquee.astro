@@ -1,0 +1,79 @@
+---
+import { services } from '../config';
+
+const items = ['7/24 Taksi', ...services.slice(1).map((s) => s.title.replace(' Transferi', '').replace(' Ulaşımı', ''))];
+---
+
+<div class="marquee-wrap" aria-hidden="true">
+  <div class="marquee">
+    <div class="track">
+      {
+        [0, 1].map(() => (
+          <div class="group">
+            {items.map((t) => (
+              <span class="item">
+                {t}
+                <i>●</i>
+              </span>
+            ))}
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Eğik şeridin kenarlarını kırpar; sayfa yana taşmaz */
+  .marquee-wrap {
+    position: relative;
+    z-index: 2;
+    overflow: hidden;
+    padding: 24px 0;
+    margin-top: -40px;
+  }
+  .marquee {
+    background: var(--yellow);
+    color: var(--black);
+    overflow: hidden;
+    padding: 22px 0;
+    transform: rotate(-1.5deg);
+    width: calc(100% + 60px);
+    margin-left: -30px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+  }
+  .track {
+    display: flex;
+    width: max-content;
+    animation: scroll 32s linear infinite;
+  }
+  .group {
+    display: flex;
+    flex: none;
+  }
+  .item {
+    display: inline-flex;
+    align-items: center;
+    gap: 34px;
+    padding-right: 34px;
+    font-size: clamp(22px, 3vw, 34px);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+  }
+  .item i {
+    font-style: normal;
+    font-size: 0.5em;
+  }
+  @keyframes scroll {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .track {
+      animation: none;
+    }
+  }
+</style>

@@ -1,0 +1,78 @@
+---
+import { site } from '../config';
+
+// Uydurma iddia yok: yalnızca gerçek bilgiler. "value" olanlar 0'dan sayarak gelir.
+const stats: { prefix?: string; value?: number; text?: string; label: string }[] = [
+  { prefix: '7/', value: 24, label: 'Gece gündüz kesintisiz hizmet' },
+  { value: 365, label: 'Bayram, tatil demeden her gün açık' },
+  { text: `Tüm ${site.city}`, label: 'Merkez ve ilçelerde hizmet' },
+];
+---
+
+<section class="stats">
+  <div class="container grid">
+    {
+      stats.map((s) => (
+        <div class="stat" data-reveal>
+          <strong class:list={{ 'is-text': s.text }}>
+            {s.value !== undefined ? (
+              <>
+                {s.prefix}<span data-count={s.value}>{s.value}</span>
+              </>
+            ) : (
+              s.text
+            )}
+          </strong>
+          <span class="label">{s.label}</span>
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .stats {
+    padding: 96px 0 40px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .stat {
+    border-top: 2px solid var(--yellow);
+    padding-top: 22px;
+  }
+  strong {
+    display: block;
+    font-size: clamp(54px, 7vw, 88px);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--yellow);
+    font-variant-numeric: tabular-nums;
+  }
+  strong.is-text {
+    /* Rakamlarla aynı yükseklikte, alta hizalı */
+    display: flex;
+    align-items: flex-end;
+    height: clamp(54px, 7vw, 88px);
+    font-size: clamp(40px, 4.6vw, 64px);
+    white-space: nowrap;
+  }
+  .label {
+    display: block;
+    margin-top: 12px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  @media (max-width: 720px) {
+    .stats {
+      padding: 72px 0 8px;
+    }
+    .grid {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+  }
+</style>

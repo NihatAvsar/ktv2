@@ -1,0 +1,103 @@
+---
+import { Picture } from 'astro:assets';
+import { site, telHref, waHref } from '../config';
+import Icon from './Icon.astro';
+import erciyesYol from '../assets/erciyes-yol.jpg';
+---
+
+<section class="cta">
+  <div class="photo-bg" data-parallax>
+    <Picture
+      src={erciyesYol}
+      formats={['avif', 'webp']}
+      widths={[768, 1280, 2000]}
+      sizes="100vw"
+      alt=""
+      loading="lazy"
+    />
+  </div>
+  <div class="overlay" aria-hidden="true"></div>
+
+  <div class="container content">
+    <span class="eyebrow" data-reveal>Yola çıkmaya hazır mısınız?</span>
+    <h2 data-reveal>{site.city}’de taksiye mi <em>ihtiyacınız var?</em></h2>
+    <p data-reveal>7/24 bize ulaşın, bulunduğunuz konuma dakikalar içinde gelelim.</p>
+    <div class="actions" data-reveal>
+      <a href={telHref} class="btn btn-yellow" data-conv="final-call">
+        <Icon name="phone" /> {site.phoneDisplay}
+      </a>
+      <a href={waHref} class="btn btn-glass" target="_blank" rel="noopener" data-conv="final-whatsapp">
+        <Icon name="chat" /> WhatsApp
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta {
+    position: relative;
+    overflow: hidden;
+    padding: 160px 0;
+    text-align: center;
+  }
+  .overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, var(--black) 0%, rgba(11, 11, 12, 0.55) 30%, rgba(11, 11, 12, 0.55) 70%, var(--black) 100%);
+  }
+  .content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .eyebrow::before {
+    display: none;
+  }
+  h2 {
+    font-size: clamp(38px, 6.4vw, 80px);
+    font-weight: 800;
+    text-wrap: balance;
+  }
+  h2 em {
+    display: block;
+    font-style: normal;
+    color: var(--yellow);
+  }
+  p {
+    margin-top: 20px;
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.82);
+    max-width: 520px;
+  }
+  .actions {
+    margin-top: 36px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+  }
+  .actions .btn-yellow {
+    min-height: 64px;
+    padding: 0 36px;
+    font-size: 18px;
+    letter-spacing: 0.02em;
+  }
+  .actions .btn-glass {
+    min-height: 64px;
+  }
+  @media (max-width: 720px) {
+    .cta {
+      padding: 110px 0;
+    }
+    .actions {
+      width: 100%;
+      flex-direction: column;
+    }
+    .actions .btn {
+      width: 100%;
+    }
+  }
+</style>
