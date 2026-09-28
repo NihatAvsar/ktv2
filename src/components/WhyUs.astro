@@ -11,7 +11,7 @@ import talas from '../assets/konum-talas.jpg';
 // Fotoğraf kutusunda sırayla dönen konumlar (kaynaklar: src/assets/KAYNAKLAR.md)
 const locations = [
   { name: 'Şehir Hastanesi', src: sehirHastanesi, alt: `${site.city} Şehir Hastanesi` },
-  { name: 'Havalimanı', src: havalimani, alt: `${site.city} Erkilet Havalimanı terminali` },
+  { name: 'Havalimanı', src: havalimani, pos: '10% center', alt: `${site.city} Havalimanı terminali` },
   { name: 'Meydan', src: meydan, alt: `${site.city} Cumhuriyet Meydanı ve Saat Kulesi` },
   { name: 'Otogar', src: otogar, alt: `${site.city} Otogarı` },
   { name: 'Talas', src: talas, alt: 'Talas’ta tarihi taş sokak ve cami' },
@@ -23,7 +23,7 @@ const locations = [
     <div class="photo" data-reveal>
       {
         locations.map((l) => (
-          <div class="loc-slide">
+          <div class="loc-slide" style={l.pos && `--pos: ${l.pos}`}>
             <div class="photo-bg" data-parallax>
               <Picture
                 src={l.src}
@@ -97,6 +97,10 @@ const locations = [
   }
   .loc-slide + .loc-slide {
     opacity: 0;
+  }
+  /* Slayta özel kadraj (ör. tabelanın görünmesi için) */
+  .loc-slide :global(img) {
+    object-position: var(--pos, center);
   }
   .photo-tag {
     position: absolute;
