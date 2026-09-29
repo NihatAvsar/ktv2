@@ -18,7 +18,7 @@ export const site = {
 
   // Sitenin yayındaki adresi. Domain alındığında güncelleyin
   // (astro.config.mjs içindeki "site" ile aynı olmalı, sonunda / olmadan)
-  siteUrl: 'https://ktv2-gamma.vercel.app',
+  siteUrl: 'https://www.taksiikayseri.com.tr',
 
   // Hizmet verilen ilçeler (Google'a gönderilen işletme bilgisinde kullanılır)
   areas: ['Melikgazi', 'Kocasinan', 'Talas'],
@@ -118,7 +118,7 @@ export const faqs = [
 
 // ============================================================
 //  HİZMET / BÖLGE SAYFALARI
-//  Her öğe sitede ayrı bir sayfa olur: ktv2-gamma.vercel.app/<slug>
+//  Her öğe sitede ayrı bir sayfa olur: www.taksiikayseri.com.tr/<slug>
 //  Google'da "Kayseri havalimanı taksi", "Talas taksi" gibi aramalarda
 //  çıkmak için her sayfanın başlığı ve metni farklı olmalıdır.
 //  image: src/pages/[slug].astro içindeki fotoğraf listesindeki ad

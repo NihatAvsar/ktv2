@@ -13,7 +13,7 @@ Tüm firma bilgileri **`src/config.ts`** dosyasında:
 | `phoneTel` | Arama linki, `+90` ile ve boşluksuz (`+905321234567`) |
 | `whatsapp` | WhatsApp numarası, `+` olmadan (`905321234567`) |
 | `whatsappMessage` | WhatsApp'ta hazır gelen mesaj |
-| `siteUrl` | Sitenin yayındaki adresi (şu an `https://ktv2-gamma.vercel.app`) |
+| `siteUrl` | Sitenin yayındaki adresi (şu an `https://www.taksiikayseri.com.tr`) |
 | `googleSiteVerification` | Search Console doğrulama kodu (bkz. 5. adım) |
 | `sameAs` | Google İşletme Profili, Instagram vb. linkler |
 | `googleAdsId` / `googleAdsCallLabel` | Google Ads dönüşüm takibi (bkz. 4. adım) |
@@ -63,7 +63,7 @@ Her sayfanın metni **farklı** olmalı; kopya metinler Google'da işe yaramaz.
 Fotoğraf eklemek için `src/pages/[slug].astro` içindeki `images` listesine ekleyin.
 
 ### Search Console
-1. https://search.google.com/search-console → **Mülk ekle › URL ön eki** → `https://ktv2-gamma.vercel.app/`
+1. https://search.google.com/search-console → **Mülk ekle › URL ön eki** → `https://www.taksiikayseri.com.tr/`
 2. Doğrulama yöntemi: **HTML etiketi**. `content="..."` içindeki kodu `googleSiteVerification`'a yazın, push edin.
 3. **Doğrula** → sol menü **Site haritaları** → `sitemap.xml` gönderin.
 4. **URL denetimi** ile ana sayfa ve her hizmet sayfası için "Dizine eklenmeyi iste".
