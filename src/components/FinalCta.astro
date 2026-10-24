@@ -1,127 +1,39 @@
 ---
-import { Picture } from 'astro:assets';
-import { site, telHref, waHref } from '../config';
+import { site, telHref } from '../config';
 import Icon from './Icon.astro';
-import taksiYol from '../assets/taksi-gece-yol.jpg';
-import taksiPark from '../assets/taksi-gece-park.jpg';
-
-// Firmanın kendi taksi fotoğrafları arka planda sırayla döner
-const slides = [
-  { src: taksiYol, pos: 'center 60%' },
-  { src: taksiPark, pos: 'center 62%' },
-];
 ---
 
-<section class="cta">
-  <div class="photo-bg" data-parallax>
-    {
-      slides.map((s) => (
-        <div class="cta-slide" style={`--pos: ${s.pos}`}>
-          <Picture
-            src={s.src}
-            formats={['avif', 'webp']}
-            widths={[768, s.src.width]}
-            sizes="100vw"
-            alt=""
-            loading="lazy"
-          />
-        </div>
-      ))
-    }
-  </div>
-  <div class="overlay" aria-hidden="true"></div>
-
-  <div class="container content">
-    <span class="eyebrow" data-reveal>Yola çıkmaya hazır mısınız?</span>
-    <h2 data-reveal>{site.city}’de taksiye mi <em>ihtiyacınız var?</em></h2>
-    <p data-reveal>7/24 bize ulaşın, bulunduğunuz konuma dakikalar içinde gelelim.</p>
-    <div class="actions" data-reveal>
-      <a href={telHref} class="btn btn-yellow" data-conv="final-call">
-        <Icon name="phone" /> {site.phoneDisplay}
-      </a>
-      <a href={waHref} class="btn btn-glass" target="_blank" rel="noopener" data-conv="final-whatsapp">
-        <Icon name="chat" /> WhatsApp
-      </a>
-    </div>
+<section class="section dark cta">
+  <div class="container">
+    <span class="eyebrow">Yola çıkmaya hazır mısınız?</span>
+    <h2 class="section-title">{site.city}’de Taksiye mi İhtiyacınız Var?</h2>
+    <p class="section-lead">7/24 bize ulaşın, bulunduğunuz konuma dakikalar içinde taksi gönderelim.</p>
+    <a href={telHref} class="btn btn-yellow" data-conv="final-call">
+      <Icon name="phone" /> Hemen Taksi Çağır — {site.phoneDisplay}
+    </a>
   </div>
 </section>
 
 <style>
   .cta {
-    position: relative;
-    overflow: hidden;
-    padding: 160px 0;
     text-align: center;
-  }
-  /* Slaytlar üst üste; JS yoksa yalnızca ilki görünür */
-  .cta-slide {
-    position: absolute;
-    inset: 0;
-  }
-  .cta-slide + .cta-slide {
-    opacity: 0;
-  }
-  .cta-slide :global(img) {
-    object-position: var(--pos);
-  }
-  .overlay {
-    position: absolute;
-    inset: 0;
     background:
-      linear-gradient(180deg, var(--black) 0%, rgba(11, 11, 12, 0.55) 30%, rgba(11, 11, 12, 0.55) 70%, var(--black) 100%);
+      radial-gradient(circle at 50% 0%, rgba(255, 196, 0, 0.14), transparent 60%),
+      var(--black);
   }
-  .content {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  .section-lead {
+    margin-left: auto;
+    margin-right: auto;
   }
-  .eyebrow::before {
-    display: none;
+  .btn {
+    margin-top: 32px;
+    min-height: 58px;
+    font-size: 15px;
   }
-  h2 {
-    font-size: clamp(38px, 6.4vw, 80px);
-    font-weight: 800;
-    text-wrap: balance;
-  }
-  h2 em {
-    display: block;
-    font-style: normal;
-    color: var(--yellow);
-  }
-  p {
-    margin-top: 20px;
-    font-size: 18px;
-    color: rgba(255, 255, 255, 0.82);
-    max-width: 520px;
-  }
-  .actions {
-    margin-top: 36px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 14px;
-  }
-  .actions .btn-yellow {
-    min-height: 64px;
-    padding: 0 36px;
-    font-size: 18px;
-    letter-spacing: 0.02em;
-  }
-  .actions .btn-glass {
-    min-height: 64px;
-  }
-  @media (max-width: 720px) {
-    .cta {
-      padding: 110px 0;
-    }
-    .actions {
+  @media (max-width: 520px) {
+    .btn {
       width: 100%;
-      flex-direction: column;
-    }
-    .actions .btn {
-      width: 100%;
+      white-space: normal;
     }
   }
 </style>

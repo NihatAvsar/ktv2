@@ -1,19 +1,9 @@
-import { site, landingPages } from '../config';
+import { site } from '../config';
 
 export function GET() {
-  const lastmod = new Date().toISOString().slice(0, 10);
-  const urls = [
-    { path: '/', priority: '1.0' },
-    ...landingPages.map((p) => ({ path: `/${p.slug}`, priority: '0.8' })),
-  ];
   const body = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls
-  .map(
-    (u) =>
-      `  <url><loc>${new URL(u.path, site.siteUrl).href}</loc><lastmod>${lastmod}</lastmod><priority>${u.priority}</priority></url>`,
-  )
-  .join('\n')}
+  <url><loc>${new URL('/', site.siteUrl).href}</loc><changefreq>monthly</changefreq><priority>1.0</priority></url>
 </urlset>
 `;
   return new Response(body, { headers: { 'Content-Type': 'application/xml; charset=utf-8' } });

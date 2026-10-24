@@ -3,14 +3,11 @@ import { site, telHref } from '../config';
 import Logo from './Logo.astro';
 import Icon from './Icon.astro';
 
-// Alt sayfalarda ana sayfadaki bölümlere gitmek için linklerin başına "/" eklenir
-const isHome = Astro.url.pathname === '/';
-const home = isHome ? '' : '/';
 const nav = [
-  { href: isHome ? '#top' : '/', label: 'Ana Sayfa' },
-  { href: `${home}#hizmetler`, label: 'Hizmetler' },
-  { href: `${home}#hakkimizda`, label: 'Hakkımızda' },
-  { href: `${home}#sss`, label: 'SSS' },
+  { href: '#top', label: 'Ana Sayfa' },
+  { href: '#hizmetler', label: 'Hizmetler' },
+  { href: '#hakkimizda', label: 'Hakkımızda' },
+  { href: '#sss', label: 'SSS' },
   { href: '#iletisim', label: 'İletişim' },
 ];
 ---
@@ -43,32 +40,16 @@ const nav = [
   };
   btn.addEventListener('click', () => setOpen(!nav.classList.contains('open')));
   nav.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
-
-  // Aşağı kaydırınca şeffaf header'ı siyaha çevir
-  const header = document.querySelector<HTMLElement>('.header')!;
-  const onScroll = () => header.classList.toggle('scrolled', window.scrollY > 40);
-  onScroll();
-  window.addEventListener('scroll', onScroll, { passive: true });
 </script>
 
 <style>
   .header {
-    position: fixed;
+    position: sticky;
     top: 0;
-    left: 0;
-    right: 0;
     z-index: 50;
-    border-bottom: 1px solid transparent;
-    transition:
-      background 0.3s ease,
-      border-color 0.3s ease;
-  }
-  .header.scrolled,
-  .header:has(.nav.open) {
-    background: rgba(11, 11, 12, 0.85);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border-bottom-color: var(--line);
+    background: rgba(11, 11, 12, 0.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   }
   .header-inner {
     height: var(--header-h);
@@ -83,7 +64,7 @@ const nav = [
     gap: 26px;
   }
   .nav a:not(.btn) {
-    color: rgba(255, 255, 255, 0.82);
+    color: #d7d7dc;
     font-weight: 600;
     font-size: 14px;
     transition: color 0.15s;
@@ -130,7 +111,7 @@ const nav = [
       gap: 0;
       padding: 8px 16px 20px;
       background: var(--black);
-      border-bottom: 1px solid var(--line);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       display: none;
     }
     .nav.open {

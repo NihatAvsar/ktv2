@@ -1,167 +1,84 @@
 ---
-import { Picture } from 'astro:assets';
 import { site, features, telHref } from '../config';
-import Icon from './Icon.astro';
-import sehirHastanesi from '../assets/konum-sehir-hastanesi.jpg';
-import havalimani from '../assets/konum-havalimani.jpg';
-import meydan from '../assets/konum-meydan.jpg';
-import otogar from '../assets/konum-otogar.jpg';
-import talas from '../assets/konum-talas.jpg';
-
-// Fotoğraf kutusunda sırayla dönen konumlar (kaynaklar: src/assets/KAYNAKLAR.md)
-const locations = [
-  { name: 'Şehir Hastanesi', src: sehirHastanesi, alt: `${site.city} Şehir Hastanesi` },
-  { name: 'Havalimanı', src: havalimani, pos: '10% center', alt: `${site.city} Havalimanı terminali` },
-  { name: 'Meydan', src: meydan, alt: `${site.city} Cumhuriyet Meydanı ve Saat Kulesi` },
-  { name: 'Otogar', src: otogar, alt: `${site.city} Otogarı` },
-  { name: 'Talas', src: talas, alt: 'Talas’ta tarihi taş sokak ve cami' },
-];
 ---
 
-<section class="section why-section" id="hakkimizda">
+<section class="section dark" id="hakkimizda">
   <div class="container why">
-    <div class="photo" data-reveal>
+    <div>
+      <span class="eyebrow">Neden biz?</span>
+      <h2 class="section-title">Neden {site.brand}?</h2>
+      <p class="section-lead">
+        Amacımız sizi yalnızca bir noktadan diğerine götürmek değil; zamanında gelen, temiz, güvenli
+        ve güler yüzlü bir yolculuk deneyimi sunmak. {site.city}’yi iyi tanıyan deneyimimizle
+        sizi en kısa rotadan ulaştırırız.
+      </p>
+      <a href={telHref} class="btn btn-yellow" data-conv="why-call">Hemen Arayın</a>
+    </div>
+
+    <ol class="features">
       {
-        locations.map((l) => (
-          <div class="loc-slide" style={l.pos && `--pos: ${l.pos}`}>
-            <div class="photo-bg" data-parallax>
-              <Picture
-                src={l.src}
-                formats={['avif', 'webp']}
-                widths={[...[640, 960].filter((w) => w < l.src.width), Math.min(1400, l.src.width)]}
-                sizes="(max-width: 960px) 100vw, 50vw"
-                alt={l.alt}
-                loading="lazy"
-              />
-            </div>
-            <div class="photo-tag">
-              <Icon name="pin" size={16} />
-              {site.city} · {l.name}
-            </div>
-          </div>
+        features.map((f, i) => (
+          <li>
+            <span class="num">{String(i + 1).padStart(2, '0')}</span>
+            <h3>{f.title}</h3>
+            <p>{f.text}</p>
+          </li>
         ))
       }
-    </div>
-
-    <div>
-      <span class="eyebrow" data-reveal>Neden biz?</span>
-      <h2 class="section-title" data-reveal>Şehri iyi tanır, <em>zamanında</em> geliriz.</h2>
-      <p class="section-lead" data-reveal>
-        Amacımız sizi yalnızca bir noktadan diğerine götürmek değil; temiz, güvenli ve güler yüzlü bir
-        yolculuk sunmak. {site.city}’yi iyi tanıyan deneyimimizle sizi en kısa rotadan ulaştırırız.
-      </p>
-
-      <ol class="features">
-        {
-          features.map((f, i) => (
-            <li data-reveal>
-              <span class="num">{String(i + 1).padStart(2, '0')}</span>
-              <div>
-                <h3>{f.title}</h3>
-                <p>{f.text}</p>
-              </div>
-            </li>
-          ))
-        }
-      </ol>
-
-      <a href={telHref} class="btn btn-yellow" data-conv="why-call" data-reveal>
-        <Icon name="phone" /> Hemen Arayın
-      </a>
-    </div>
+    </ol>
   </div>
 </section>
 
 <style>
-  .why-section {
-    background: var(--black-2);
-  }
   .why {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 72px;
+    grid-template-columns: 1fr 1.1fr;
+    gap: 56px;
     align-items: center;
   }
-  .photo {
-    position: relative;
-    border-radius: 28px;
-    overflow: hidden;
-    aspect-ratio: 4 / 5;
-    background: var(--black-3);
-    isolation: isolate;
-  }
-  /* Slaytlar üst üste; JS yoksa yalnızca ilki görünür */
-  .loc-slide {
-    position: absolute;
-    inset: 0;
-  }
-  .loc-slide + .loc-slide {
-    opacity: 0;
-  }
-  /* Slayta özel kadraj (ör. tabelanın görünmesi için) */
-  .loc-slide :global(img) {
-    object-position: var(--pos, center);
-  }
-  .photo-tag {
-    position: absolute;
-    left: 20px;
-    bottom: 20px;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 16px;
-    border-radius: 999px;
-    background: rgba(11, 11, 12, 0.6);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    font-size: 13px;
-    font-weight: 700;
-  }
-  .photo-tag :global(svg) {
-    color: var(--yellow);
+  .btn {
+    margin-top: 32px;
   }
   .features {
     list-style: none;
-    margin: 36px 0;
+    margin: 0;
     padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
   }
   .features li {
-    display: flex;
-    gap: 22px;
-    padding: 20px 0;
-    border-bottom: 1px solid var(--line);
-  }
-  .features li:first-child {
-    border-top: 1px solid var(--line);
+    background: var(--black-2);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: var(--radius);
+    padding: 26px;
   }
   .num {
-    font-size: 15px;
+    font-size: 34px;
     font-weight: 800;
     color: var(--yellow);
-    padding-top: 2px;
+    line-height: 1;
   }
-  .features h3 {
-    font-size: 19px;
+  h3 {
+    margin-top: 16px;
+    font-size: 18px;
     font-weight: 800;
   }
-  .features p {
-    margin-top: 4px;
-    color: var(--muted);
-    font-size: 15px;
+  p {
+    margin-top: 6px;
+    color: #a9a9b1;
+    font-size: 14px;
   }
 
   @media (max-width: 960px) {
     .why {
       grid-template-columns: 1fr;
-      gap: 44px;
-    }
-    .photo {
-      aspect-ratio: 4 / 3;
+      gap: 40px;
     }
   }
-  @media (max-width: 520px) {
-    .btn {
-      width: 100%;
+  @media (max-width: 460px) {
+    .features {
+      grid-template-columns: 1fr;
     }
   }
 </style>

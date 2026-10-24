@@ -1,14 +1,12 @@
 ---
-import { site, telHref, waHref, mapsHref, landingPages } from '../config';
+import { site, telHref, waHref, mapsHref } from '../config';
 import Logo from './Logo.astro';
 import Icon from './Icon.astro';
 
 const year = new Date().getFullYear();
-const isHome = Astro.url.pathname === '/';
-const home = isHome ? '' : '/';
 ---
 
-<footer class="footer" id="iletisim">
+<footer class="footer dark" id="iletisim">
   <div class="container footer-grid">
     <div>
       <Logo />
@@ -20,17 +18,10 @@ const home = isHome ? '' : '/';
     <div>
       <h3>Hızlı Linkler</h3>
       <ul>
-        <li><a href={isHome ? '#top' : '/'}>Ana Sayfa</a></li>
-        <li><a href={`${home}#hizmetler`}>Hizmetler</a></li>
-        <li><a href={`${home}#hakkimizda`}>Hakkımızda</a></li>
-        <li><a href={`${home}#sss`}>Sıkça Sorulan Sorular</a></li>
-      </ul>
-    </div>
-
-    <div>
-      <h3>Hizmet Bölgeleri</h3>
-      <ul>
-        {landingPages.map((p) => <li><a href={`/${p.slug}`}>{p.menu}</a></li>)}
+        <li><a href="#top">Ana Sayfa</a></li>
+        <li><a href="#hizmetler">Hizmetler</a></li>
+        <li><a href="#hakkimizda">Hakkımızda</a></li>
+        <li><a href="#sss">Sıkça Sorulan Sorular</a></li>
       </ul>
     </div>
 
@@ -50,10 +41,6 @@ const home = isHome ? '' : '/';
 
   <div class="container bottom">
     <span>© {year} {site.brand}</span>
-    <span class="credit">
-      Fotoğraflar: Özgür Avşar, ömer faruk sezer, Muhammed Kösedağ /
-      <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a>
-    </span>
     <span>
       <button type="button" data-open-legal="gizlilik">Gizlilik Politikası</button> ·
       <button type="button" data-open-legal="kvkk">KVKK</button>
@@ -68,7 +55,7 @@ const home = isHome ? '' : '/';
   }
   .footer-grid {
     display: grid;
-    grid-template-columns: 1.3fr 1fr 1fr 1fr;
+    grid-template-columns: 1.4fr 1fr 1fr;
     gap: 40px;
   }
   .about {
@@ -122,9 +109,6 @@ const home = isHome ? '' : '/';
     color: inherit;
     font: inherit;
     cursor: pointer;
-  }
-  .credit a {
-    text-decoration: underline;
   }
   .bottom button:hover {
     color: var(--yellow);

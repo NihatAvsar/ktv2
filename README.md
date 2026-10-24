@@ -13,9 +13,7 @@ Tüm firma bilgileri **`src/config.ts`** dosyasında:
 | `phoneTel` | Arama linki, `+90` ile ve boşluksuz (`+905321234567`) |
 | `whatsapp` | WhatsApp numarası, `+` olmadan (`905321234567`) |
 | `whatsappMessage` | WhatsApp'ta hazır gelen mesaj |
-| `siteUrl` | Sitenin yayındaki adresi (şu an `https://www.taksiikayseri.com.tr`) |
-| `googleSiteVerification` | Search Console doğrulama kodu (bkz. 5. adım) |
-| `sameAs` | Google İşletme Profili, Instagram vb. linkler |
+| `siteUrl` | Alınan domain (`https://www.alanadiniz.com`) |
 | `googleAdsId` / `googleAdsCallLabel` | Google Ads dönüşüm takibi (bkz. 4. adım) |
 
 Hizmetler ve SSS metinleri de aynı dosyada.
@@ -52,53 +50,14 @@ Arama/WhatsApp tıklamalarını dönüşüm olarak saymak için:
 
 ID boşken sitede hiçbir Google kodu yüklenmez.
 
-## 5. Google'da görünürlük (SEO)
-
-### Hizmet / bölge sayfaları
-`src/config.ts` → `landingPages` listesindeki her öğe ayrı bir sayfadır
-(ör. `/talas-taksi`, `/kayseri-havalimani-taksi`). Yeni sayfa eklemek için bir öğeyi
-kopyalayıp `slug`, `title`, `description`, metinleri ve SSS'yi değiştirin. Sitemap,
-alt kısımdaki linkler ve Google'a gönderilen yapısal veri otomatik güncellenir.
-Her sayfanın metni **farklı** olmalı; kopya metinler Google'da işe yaramaz.
-Fotoğraf eklemek için `src/pages/[slug].astro` içindeki `images` listesine ekleyin.
-
-### Search Console
-1. https://search.google.com/search-console → **Mülk ekle › URL ön eki** → `https://www.taksiikayseri.com.tr/`
-2. Doğrulama yöntemi: **HTML etiketi**. `content="..."` içindeki kodu `googleSiteVerification`'a yazın, push edin.
-3. **Doğrula** → sol menü **Site haritaları** → `sitemap.xml` gönderin.
-4. **URL denetimi** ile ana sayfa ve her hizmet sayfası için "Dizine eklenmeyi iste".
-
-### Google İşletme Profili
-business.google.com adresinden profil açın (kategori: Taksi servisi, hizmet bölgesi işletmesi,
-adres gizli). Profil linkini `sameAs` listesine ekleyin.
-
-### Domain alındığında
-1. Vercel → Settings › Domains → domaini ekleyin; `ktv2-gamma.vercel.app` için yeni domaine yönlendirme açın.
-2. `src/config.ts` → `siteUrl` ve `astro.config.mjs` → `site` değerlerini yeni domain yapın, push edin.
-3. Search Console'a yeni domaini ekleyin, sitemap'i yeniden gönderin. İşletme Profili'ndeki linki güncelleyin.
+Ayrıca Google Search Console'a domaini ekleyip `https://alanadiniz.com/sitemap.xml` adresini gönderin.
 
 ## Dosya yapısı
 
 ```
 src/config.ts           tüm bilgiler ve metinler
-src/pages/index.astro   ana sayfa (bölümleri sıralar)
-src/pages/[slug].astro  hizmet / bölge sayfaları şablonu
+src/pages/index.astro   sayfa (bölümleri sıralar)
 src/components/         Header, Hero, Hizmetler, SSS, Footer, KVKK penceresi, mobil arama çubuğu
 src/layouts/Base.astro  SEO etiketleri, schema.org verisi, Google Ads kodu
-src/scripts/animations.ts  GSAP animasyonları (açılış, kaydırınca beliren öğeler, paralaks, sayaçlar)
-src/assets/             fotoğraflar
+public/taxi.svg         hero görseli (kendi fotoğrafınızla değiştirebilirsiniz)
 ```
-
-## Fotoğrafları değiştirme
-
-`src/assets/` klasöründeki dosyaları **aynı adla** yenisiyle değiştirmeniz yeterli;
-Astro derlerken otomatik olarak küçültüp WebP/AVIF formatına çevirir.
-
-| Dosya | Nerede |
-|---|---|
-| `hero-mobil.jpg` | Telefonda açılış arka planı (dikey fotoğraf olmalı) |
-| `hero-masaustu.jpg` | Bilgisayarda açılış arka planı (yatay fotoğraf) |
-| `erciyes-yol.jpg` | "Neden Biz" ve en alttaki çağrı bölümü |
-
-Şu anki fotoğraflar Unsplash'ten (ticari kullanım serbest). Değiştirirseniz
-`src/components/Footer.astro` içindeki "Fotoğraflar:" satırını da güncelleyin.

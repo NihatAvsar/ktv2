@@ -9,8 +9,6 @@
     "preview": "astro preview"
   },
   "dependencies": {
-    "@vercel/analytics": "^2.0.1",
-    "astro": "^5.18.2",
-    "gsap": "^3.15.0"
+    "astro": "^5.18.2"
   }
 }

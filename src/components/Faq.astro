@@ -1,24 +1,16 @@
 ---
 import { faqs } from '../config';
-
-interface Props {
-  items?: { q: string; a: string }[];
-}
-
-const { items = faqs } = Astro.props;
 ---
 
-<section class="section" id="sss">
-  <div class="container faq">
-    <div class="intro">
-      <span class="eyebrow" data-reveal>Sıkça sorulan sorular</span>
-      <h2 class="section-title" data-reveal>Aklınıza <em>takılanlar.</em></h2>
-    </div>
+<section class="section faq-section" id="sss">
+  <div class="container faq-wrap">
+    <span class="eyebrow">Sıkça sorulan sorular</span>
+    <h2 class="section-title">Aklınıza Takılanlar</h2>
 
     <div class="faqs">
       {
-        items.map((f, i) => (
-          <details open={i === 0} data-reveal>
+        faqs.map((f, i) => (
+          <details open={i === 0}>
             <summary>{f.q}</summary>
             <p>{f.a}</p>
           </details>
@@ -29,38 +21,34 @@ const { items = faqs } = Astro.props;
 </section>
 
 <style>
-  .faq {
-    display: grid;
-    grid-template-columns: 0.8fr 1.2fr;
-    gap: 64px;
-    align-items: start;
+  .faq-section {
+    background: var(--gray-50);
   }
-  .intro {
-    position: sticky;
-    top: calc(var(--header-h) + 32px);
+  .faq-wrap {
+    max-width: 860px;
+    text-align: center;
   }
   .faqs {
+    margin-top: 40px;
     display: grid;
     gap: 12px;
+    text-align: left;
   }
   details {
-    background: var(--black-2);
-    border: 1px solid var(--line);
+    background: var(--white);
+    border: 1px solid var(--gray-200);
     border-radius: var(--radius-sm);
-    transition:
-      border-color 0.2s,
-      background 0.2s;
+    transition: border-color 0.15s;
   }
   details[open] {
-    border-color: rgba(255, 196, 0, 0.7);
-    background: var(--black-3);
+    border-color: var(--yellow);
   }
   summary {
     list-style: none;
     cursor: pointer;
-    padding: 22px 64px 22px 24px;
+    padding: 20px 56px 20px 22px;
     font-weight: 700;
-    font-size: 17px;
+    font-size: 16px;
     position: relative;
   }
   summary::-webkit-details-marker {
@@ -72,40 +60,21 @@ const { items = faqs } = Astro.props;
     right: 20px;
     top: 50%;
     transform: translateY(-50%);
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     background: var(--yellow);
-    color: var(--black);
     display: grid;
     place-items: center;
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 700;
     line-height: 1;
-    transition: transform 0.2s;
   }
   details[open] summary::after {
     content: '−';
   }
   details p {
-    padding: 0 24px 22px;
-    color: var(--muted);
-  }
-
-  @media (max-width: 860px) {
-    .faq {
-      grid-template-columns: 1fr;
-      gap: 36px;
-    }
-    .intro {
-      position: static;
-    }
-    summary {
-      font-size: 16px;
-      padding: 20px 60px 20px 20px;
-    }
-    details p {
-      padding: 0 20px 20px;
-    }
+    padding: 0 22px 20px;
+    color: var(--gray-500);
   }
 </style>

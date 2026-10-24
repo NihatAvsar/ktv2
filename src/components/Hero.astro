@@ -1,260 +1,159 @@
 ---
-import { getImage } from 'astro:assets';
 import { site, telHref, waHref } from '../config';
 import Icon from './Icon.astro';
-import heroMobil from '../assets/hero-mobil.jpg';
-import heroMasaustu from '../assets/hero-masaustu.jpg';
-import erciyesMobil from '../assets/erciyes-mobil.jpg';
 
-// Arka plan slaytları: Saat Kulesi ve Erciyes sırayla döner (telefonda dikey, geniş ekranda yatay).
-// İlk slayt sabit açılış görseli; sonrakiler animations.ts ile yavaşça geçer.
-// pos: geniş ekranda fotoğrafın hangi kısmı görünsün (object-position)
-const slides = [
-  { mobil: heroMobil, masaustu: heroMasaustu, pos: 'center 70%', alt: `${site.city} Saat Kulesi ve Erciyes Dağı` },
-  { mobil: erciyesMobil, masaustu: heroMobil, pos: 'center 58%', alt: '' },
-];
-
-const mobilWidths = [480, 750, 1080];
-const masaustuWidths = [1024, 1600, 2400];
-// Küçük fotoğrafları büyütmemek için genişlikleri orijinal boyutla sınırla
-const fit = (src: ImageMetadata, widths: number[]) => {
-  const w = widths.filter((x) => x < src.width);
-  return [...w, Math.min(src.width, widths[widths.length - 1])];
-};
-
-const images = await Promise.all(
-  slides.map(async (s) => {
-    const mw = fit(s.mobil, mobilWidths);
-    const dw = fit(s.masaustu, masaustuWidths);
-    const [mobilAvif, mobilWebp, masaustuAvif, masaustuWebp, fallback] = await Promise.all([
-      getImage({ src: s.mobil, widths: mw, format: 'avif' }),
-      getImage({ src: s.mobil, widths: mw, format: 'webp' }),
-      getImage({ src: s.masaustu, widths: dw, format: 'avif' }),
-      getImage({ src: s.masaustu, widths: dw, format: 'webp' }),
-      getImage({ src: s.masaustu, width: Math.min(1600, s.masaustu.width), format: 'jpg' }),
-    ]);
-    return { ...s, mobilAvif, mobilWebp, masaustuAvif, masaustuWebp, fallback };
-  }),
-);
-
-const mobileMq = '(max-width: 767px)';
+const badges = ['7/24 Hizmet', 'Hızlı Ulaşım', 'Güvenli Yolculuk', `${site.city} Geneli`];
 ---
 
-<section class="hero" id="top">
-  <div class="photo-bg" data-parallax>
-    {
-      images.map((s, i) => (
-        <picture class="hero-slide" aria-hidden={i > 0 ? 'true' : undefined} style={`--pos: ${s.pos}`}>
-          <source media={mobileMq} srcset={s.mobilAvif.srcSet.attribute} type="image/avif" sizes="100vw" />
-          <source media={mobileMq} srcset={s.mobilWebp.srcSet.attribute} type="image/webp" sizes="100vw" />
-          <source srcset={s.masaustuAvif.srcSet.attribute} type="image/avif" sizes="100vw" />
-          <source srcset={s.masaustuWebp.srcSet.attribute} type="image/webp" sizes="100vw" />
-          <img src={s.fallback.src} alt={s.alt} fetchpriority={i === 0 ? 'high' : 'low'} decoding="async" />
-        </picture>
-      ))
-    }
-  </div>
-  <div class="overlay" aria-hidden="true"></div>
+<section class="hero dark" id="top">
+  <div class="container hero-grid">
+    <div class="hero-text">
+      <span class="eyebrow">{site.city}’de 7/24 taksi hizmeti</span>
+      <h1>{site.city} Taksi | 7/24 Hızlı ve Güvenilir Taksi</h1>
+      <p class="lead">
+        Şehir içi, havalimanı, otogar, hastane ve şehirler arası tüm yolculuklarınızda gece gündüz
+        yanınızdayız. Tek telefonla aracınız kapınızda.
+      </p>
 
-  <div class="container hero-content">
-    <div class="top">
-      <span class="eyebrow" data-hero>{site.city}’de gece gündüz</span>
-      <h1>
-        <span class="big" aria-label="7/24">
-          {['7', '/', '2', '4'].map((c) => <span class="big-char" aria-hidden="true">{c}</span>)}
-        </span>
-        <span class="h1-text" data-hero>{site.city} Taksi</span>
-      </h1>
-      <p class="lead" data-hero>Hızlı ve güvenilir taksi, tek telefonla kapınızda.</p>
-    </div>
+      <a href={telHref} class="big-phone" data-conv="hero-phone">{site.phoneDisplay}</a>
 
-    <div class="bottom">
-      <a href={telHref} class="big-phone" data-conv="hero-phone" data-hero>
-        <Icon name="phone" size={26} />
-        {site.phoneDisplay}
-      </a>
-      <div class="actions" id="hero-actions" data-hero>
+      <div class="actions">
         <a href={telHref} class="btn btn-yellow" data-conv="hero-call">
           <Icon name="phone" /> Hemen Taksi Çağır
         </a>
-        <a href={waHref} class="btn btn-glass" target="_blank" rel="noopener" data-conv="hero-whatsapp">
-          <Icon name="chat" /> WhatsApp’tan Yaz
+        <a href={waHref} class="btn btn-outline" target="_blank" rel="noopener" data-conv="hero-whatsapp">
+          <Icon name="chat" /> WhatsApp’tan Taksi Çağır
         </a>
+      </div>
+
+      <ul class="badges">
+        {badges.map((b) => <li><Icon name="check" size={16} /> {b}</li>)}
+      </ul>
+    </div>
+
+    <div class="hero-visual">
+      <img src="/taxi.svg" alt={`${site.city}’de sarı taksi`} width="600" height="420" fetchpriority="high" />
+      <div class="float-card">
+        <strong>24/7</strong>
+        <span>Her an yanınızdayız</span>
       </div>
     </div>
   </div>
-
-  <a href="#hizmetler" class="scroll-hint" aria-label="Aşağı kaydır">
-    <span></span>
-  </a>
 </section>
 
 <style>
   .hero {
+    padding: 72px 0 96px;
     position: relative;
-    min-height: 100vh;
-    min-height: 100svh;
-    display: flex;
     overflow: hidden;
-    background: var(--black);
   }
-  /* Slaytlar üst üste; JS yoksa yalnızca ilki görünür */
-  .hero-slide {
+  .hero::before {
+    content: '';
     position: absolute;
-    inset: 0;
+    inset: auto -20% -60% auto;
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(circle, rgba(255, 196, 0, 0.12), transparent 65%);
+    pointer-events: none;
   }
-  .hero-slide + .hero-slide {
-    opacity: 0;
-  }
-  .photo-bg img {
-    object-position: var(--pos, center 70%);
-  }
-  .overlay {
-    position: absolute;
-    inset: 0;
-    background:
-      linear-gradient(180deg, rgba(11, 11, 12, 0.55) 0%, rgba(11, 11, 12, 0) 35%),
-      linear-gradient(0deg, rgba(11, 11, 12, 0.95) 0%, rgba(11, 11, 12, 0.35) 45%, rgba(11, 11, 12, 0) 70%),
-      linear-gradient(90deg, rgba(11, 11, 12, 0.75) 0%, rgba(11, 11, 12, 0) 65%);
-  }
-  .hero-content {
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap: 56px;
+    align-items: center;
     position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    gap: 36px;
-    padding-top: calc(var(--header-h) + 40px);
-    padding-bottom: 88px;
-  }
-  .eyebrow {
-    margin-bottom: 8px;
   }
   h1 {
-    display: flex;
-    flex-direction: column;
-  }
-  .big {
-    display: flex;
-    font-size: clamp(120px, 21vw, 290px);
-    line-height: 0.82;
-    font-weight: 800;
-    letter-spacing: -0.06em;
-    color: var(--yellow);
-    overflow: hidden;
-    padding: 0.04em 0 0.06em;
-    text-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
-  }
-  .big-char {
-    display: inline-block;
-  }
-  .h1-text {
-    margin-top: 10px;
-    font-size: clamp(34px, 4.6vw, 62px);
+    font-size: clamp(34px, 5vw, 58px);
     font-weight: 800;
   }
   .lead {
-    margin-top: 14px;
-    color: rgba(255, 255, 255, 0.8);
-    font-size: clamp(16px, 1.6vw, 20px);
-    max-width: 520px;
+    margin-top: 20px;
+    color: #c3c3ca;
+    font-size: 17px;
+    max-width: 540px;
   }
   .big-phone {
-    display: inline-flex;
-    align-items: center;
-    gap: 14px;
-    font-size: clamp(30px, 3.6vw, 44px);
+    display: inline-block;
+    margin-top: 28px;
+    font-size: clamp(32px, 4.4vw, 46px);
     font-weight: 800;
-    letter-spacing: 0.01em;
-  }
-  .big-phone :global(svg) {
     color: var(--yellow);
+    letter-spacing: 0.01em;
   }
   .actions {
     display: flex;
     flex-wrap: wrap;
     gap: 14px;
-    margin-top: 22px;
+    margin-top: 24px;
   }
-  .scroll-hint {
+  .badges {
+    list-style: none;
+    padding: 0;
+    margin: 28px 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 22px;
+    color: #c3c3ca;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .badges li {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .badges :global(svg) {
+    color: var(--yellow);
+  }
+  .hero-visual {
+    position: relative;
+  }
+  .hero-visual img {
+    width: 100%;
+    height: auto;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.45);
+  }
+  .float-card {
     position: absolute;
-    z-index: 1;
-    right: 40px;
-    bottom: 40px;
-    width: 28px;
-    height: 46px;
-    border: 2px solid rgba(255, 255, 255, 0.5);
-    border-radius: 20px;
+    right: -14px;
+    bottom: -26px;
+    background: var(--white);
+    color: var(--black);
+    padding: 16px 22px;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
   }
-  .scroll-hint span {
-    position: absolute;
-    left: 50%;
-    top: 8px;
-    width: 4px;
-    height: 8px;
-    margin-left: -2px;
-    border-radius: 2px;
-    background: var(--yellow);
-    animation: wheel 1.8s ease-in-out infinite;
+  .float-card strong {
+    font-size: 28px;
+    color: var(--yellow-dark);
   }
-  @keyframes wheel {
-    0% {
-      transform: translateY(0);
-      opacity: 1;
-    }
-    70% {
-      transform: translateY(14px);
-      opacity: 0;
-    }
-    100% {
-      opacity: 0;
-    }
+  .float-card span {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-500);
   }
 
-  @media (max-width: 767px) {
-    .photo-bg img {
-      object-position: center 62%;
+  @media (max-width: 960px) {
+    .hero {
+      padding: 44px 0 72px;
     }
-    .overlay {
-      background:
-        linear-gradient(180deg, rgba(11, 11, 12, 0.7) 0%, rgba(11, 11, 12, 0.1) 42%, rgba(11, 11, 12, 0) 55%),
-        linear-gradient(0deg, rgba(11, 11, 12, 0.97) 0%, rgba(11, 11, 12, 0.6) 30%, rgba(11, 11, 12, 0) 52%);
+    .hero-grid {
+      grid-template-columns: 1fr;
+      gap: 44px;
     }
-    .hero-content {
-      justify-content: space-between;
-      padding-top: calc(var(--header-h) + 18px);
-      padding-bottom: 28px;
-      gap: 24px;
-    }
-    .big {
-      font-size: clamp(96px, 33vw, 150px);
-    }
-    .h1-text {
-      font-size: 34px;
-      margin-top: 6px;
-    }
-    .lead {
-      font-size: 16px;
-      margin-top: 8px;
-    }
-    .big-phone {
-      font-size: 30px;
-    }
-    .actions {
-      flex-direction: column;
-      margin-top: 16px;
-      gap: 10px;
-    }
-    .actions .btn {
-      width: 100%;
-    }
-    .scroll-hint {
-      display: none;
+    .float-card {
+      right: 12px;
     }
   }
-  @media (prefers-reduced-motion: reduce) {
-    .scroll-hint span {
-      animation: none;
+  @media (max-width: 520px) {
+    .actions .btn {
+      width: 100%;
     }
   }
 </style>
