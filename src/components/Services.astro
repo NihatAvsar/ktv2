@@ -5,96 +5,198 @@ import Icon from './Icon.astro';
 
 <section class="section" id="hizmetler">
   <div class="container">
-    <span class="eyebrow">Hizmetlerimiz</span>
-    <h2 class="section-title">İhtiyacınız Olan Her An Yanınızdayız</h2>
-    <p class="section-lead">
-      {site.city}’nin dört bir yanında güvenli ve konforlu ulaşım için tek telefon yeterli.
-    </p>
+    <div class="head">
+      <div>
+        <span class="eyebrow" data-reveal>Hizmetlerimiz</span>
+        <h2 class="section-title" data-reveal>Nereye giderseniz <em>gidin.</em></h2>
+      </div>
+      <p class="section-lead" data-reveal>
+        {site.city}’nin dört bir yanında güvenli ve konforlu ulaşım için tek telefon yeterli.
+      </p>
+    </div>
+  </div>
 
-    <div class="grid">
+  <div class="container rail-wrap">
+    <div class="rail" role="list">
       {
-        services.map((s) => (
-          <article class="card">
-            <span class="icon">
-              <Icon name={s.icon} size={22} />
-            </span>
+        services.map((s, i) => (
+          <article class="card" role="listitem" data-reveal>
+            <div class="card-top">
+              <span class="icon">
+                <Icon name={s.icon} size={24} />
+              </span>
+              <span class="num">{String(i + 1).padStart(2, '0')}</span>
+            </div>
             <h3>{s.title}</h3>
             <p>{s.text}</p>
-            <a href={telHref} class="card-link" data-conv={`service-${s.icon}`}>
-              Hemen ara <Icon name="arrow" size={16} />
-            </a>
+            <div class="card-links">
+              <a href={telHref} class="card-link" data-conv={`service-${s.icon}`}>
+                Hemen ara <Icon name="arrow" size={16} />
+              </a>
+              {s.href && (
+                <a href={s.href} class="card-more">
+                  Detaylı bilgi
+                </a>
+              )}
+            </div>
           </article>
         ))
       }
     </div>
+    <p class="swipe-hint" aria-hidden="true">Kaydırın <Icon name="arrow" size={14} /></p>
   </div>
 </section>
 
 <style>
-  .grid {
-    margin-top: 48px;
+  .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .head .section-lead {
+    max-width: 420px;
+  }
+  .rail {
+    margin-top: 56px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+    gap: 18px;
   }
   .card {
-    background: var(--white);
-    border: 1px solid var(--gray-200);
+    position: relative;
+    background: var(--black-2);
+    border: 1px solid var(--line);
     border-radius: var(--radius);
-    padding: 28px;
+    padding: 30px;
     display: flex;
     flex-direction: column;
+    min-height: 300px;
+    overflow: hidden;
     transition:
-      transform 0.2s ease,
-      box-shadow 0.2s ease,
-      border-color 0.2s ease;
+      border-color 0.3s ease,
+      transform 0.3s ease;
+  }
+  .card::after {
+    content: '';
+    position: absolute;
+    inset: auto -40% -60% auto;
+    width: 260px;
+    height: 260px;
+    background: radial-gradient(circle, rgba(255, 196, 0, 0.18), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
   }
   .card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow);
-    border-color: var(--yellow);
+    border-color: rgba(255, 196, 0, 0.6);
+    transform: translateY(-6px);
+  }
+  .card:hover::after {
+    opacity: 1;
+  }
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
   }
   .icon {
     display: grid;
     place-items: center;
-    width: 48px;
-    height: 48px;
-    border-radius: 14px;
-    background: #fff4cc;
+    width: 54px;
+    height: 54px;
+    border-radius: 16px;
+    background: var(--yellow);
     color: var(--black);
   }
+  .num {
+    font-size: 14px;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.28);
+    letter-spacing: 0.1em;
+  }
   h3 {
-    margin-top: 22px;
-    font-size: 20px;
+    margin-top: 28px;
+    font-size: 22px;
     font-weight: 800;
   }
-  p {
+  .card p {
     margin-top: 10px;
-    color: var(--gray-500);
+    color: var(--muted);
     font-size: 15px;
     flex: 1;
   }
+  .card-links {
+    margin-top: 22px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 22px;
+  }
+  .card-more {
+    font-weight: 700;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .card-more:hover {
+    color: var(--white);
+  }
   .card-link {
-    margin-top: 20px;
     display: inline-flex;
     align-items: center;
     gap: 6px;
     font-weight: 800;
     font-size: 14px;
-    color: var(--yellow-dark);
+    color: var(--yellow);
   }
-  .card-link:hover {
-    color: var(--black);
+  .swipe-hint {
+    display: none;
   }
 
   @media (max-width: 960px) {
-    .grid {
+    .rail {
       grid-template-columns: repeat(2, 1fr);
     }
   }
-  @media (max-width: 620px) {
-    .grid {
-      grid-template-columns: 1fr;
+
+  /* Telefonda parmakla yana kaydırılan kartlar */
+  @media (max-width: 720px) {
+    .rail-wrap {
+      padding: 0;
+    }
+    .rail {
+      margin-top: 40px;
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding: 4px 18px 8px;
+      scroll-padding: 0 18px;
+      scrollbar-width: none;
+    }
+    .rail::-webkit-scrollbar {
+      display: none;
+    }
+    .card {
+      flex: 0 0 82%;
+      scroll-snap-align: start;
+      min-height: 320px;
+    }
+    .card:hover {
+      transform: none;
+    }
+    .swipe-hint {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+      margin: 14px 18px 0;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
     }
   }
 </style>

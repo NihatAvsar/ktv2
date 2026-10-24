@@ -1,6 +1,11 @@
 ---
 import { site } from '../config';
 import Icon from './Icon.astro';
+
+// CC lisanslı fotoğraflar için zorunlu atıf (ayrıntı: src/assets/KAYNAKLAR.md)
+const credits = [
+  { place: 'Meydan', author: 'Tahir Boztepe', license: 'CC BY 3.0', licenseUrl: 'https://creativecommons.org/licenses/by/3.0/', url: 'https://commons.wikimedia.org/wiki/File:Kayseri-Tahir_Boztepe.jpg' },
+];
 ---
 
 <dialog class="legal" id="legal-gizlilik" aria-labelledby="gizlilik-title">
@@ -16,11 +21,28 @@ import Icon from './Icon.astro';
     hizmetinin sağlanması amacıyla kullanılır ve üçüncü kişilerle paylaşılmaz.
   </p>
   <p>
+    Sitenin kaç kez ziyaret edildiğini görmek için Vercel Analytics kullanılır. Bu araç çerez
+    kullanmaz ve ziyaretçileri kimlikleriyle tanımlamaz; yalnızca anonim sayfa görüntüleme sayıları
+    tutulur.
+  </p>
+  <p>
     Reklam performansını ölçmek amacıyla Google Ads dönüşüm ölçümü kullanılabilir. Bu durumda Google,
     kendi gizlilik politikası çerçevesinde çerez ve benzeri teknolojiler kullanabilir. Tarayıcı
     ayarlarınızdan çerezleri dilediğiniz zaman engelleyebilir veya silebilirsiniz.
   </p>
   <p>Sorularınız için bizimle <strong>{site.phoneDisplay}</strong> numarasından iletişime geçebilirsiniz.</p>
+  <p class="credits">
+    <strong>Fotoğraf kaynakları (Wikimedia Commons):</strong>
+    {
+      credits.map((c, i) => (
+        <>
+          {i > 0 && ' · '}
+          <a href={c.url} target="_blank" rel="noopener">{c.place}</a>: {c.author},{' '}
+          <a href={c.licenseUrl} target="_blank" rel="noopener">{c.license}</a>
+        </>
+      ))
+    }
+  </p>
 </dialog>
 
 <dialog class="legal" id="legal-kvkk" aria-labelledby="kvkk-title">
@@ -71,7 +93,8 @@ import Icon from './Icon.astro';
     border: 0;
     border-radius: var(--radius);
     padding: 36px 32px 28px;
-    color: var(--text);
+    color: #16161a;
+    background: #fff;
     box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
   }
   .legal::backdrop {
@@ -88,6 +111,15 @@ import Icon from './Icon.astro';
     font-size: 15px;
     margin-top: 12px;
   }
+  .credits {
+    margin-top: 20px;
+    padding-top: 14px;
+    border-top: 1px solid #ececef;
+    font-size: 12px;
+  }
+  .credits a {
+    text-decoration: underline;
+  }
   .close {
     position: absolute;
     top: 16px;
@@ -96,11 +128,11 @@ import Icon from './Icon.astro';
     height: 40px;
     border-radius: 50%;
     border: 0;
-    background: var(--gray-50);
+    background: #f2f2f4;
     display: grid;
     place-items: center;
     cursor: pointer;
-    color: var(--text);
+    color: #16161a;
   }
   .close:hover {
     background: var(--yellow);
